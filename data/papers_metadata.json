@@ -1,0 +1,185 @@
+[
+  {
+    "title": "Steering Conceptual Bias via Transformer Latent-Subspace Activation",
+    "authors": [
+      "Vansh Sharma",
+      "Venkat Raman"
+    ],
+    "abstract": "This work examines whether activating latent subspaces in language models\n(LLMs) can steer scientific code generation toward a specific programming\nlanguage. Five causal LLMs were first evaluated on scientific coding prompts to\nquantify their baseline bias among four programming languages. A static\nneuron-attribution method, perturbing the highest activated MLP weight for a\nC++ or CPP token, proved brittle and exhibited limited generalization across\nprompt styles and model scales. To address these limitations, a\ngradient-refined adaptive activation steering framework (G-ACT) was developed:\nper-prompt activation differences are clustered into a small set of steering\ndirections, and lightweight per-layer probes are trained and refined online to\nselect the appropriate steering vector. In LLaMA-3.2 3B, this approach reliably\nbiases generation towards the CPP language by increasing the average probe\nclassification accuracy by 15% and the early layers (0-6) improving the probe\nclassification accuracy by 61.5% compared to the standard ACT framework. For\nLLaMA-3.3 70B, where attention-head signals become more diffuse, targeted\ninjections at key layers still improve language selection. Although per-layer\nprobing introduces a modest inference overhead, it remains practical by\nsteering only a subset of layers and enables reproducible model behavior. These\nresults demonstrate a scalable, interpretable and efficient mechanism for\nconcept-level control for practical agentic systems.",
+    "url": "http://arxiv.org/abs/2506.18887v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18887v1",
+    "published": "2025-06-23T17:56:34+00:00",
+    "categories": [
+      "cs.AI",
+      "cs.LG",
+      "cs.SY",
+      "eess.SY",
+      "I.2.7; I.2.6; I.2.1; D.3.3; C.4"
+    ],
+    "arxiv_id": "2506.18887v1"
+  },
+  {
+    "title": "Learning Physical Systems: Symplectification via Gauge Fixing in Dirac Structures",
+    "authors": [
+      "Aristotelis Papatheodorou",
+      "Pranav Vaidhyanathan",
+      "Natalia Ares",
+      "Ioannis Havoutis"
+    ],
+    "abstract": "Physics-informed deep learning has achieved remarkable progress by embedding\ngeometric priors, such as Hamiltonian symmetries and variational principles,\ninto neural networks, enabling structure-preserving models that extrapolate\nwith high accuracy. However, in systems with dissipation and holonomic\nconstraints, ubiquitous in legged locomotion and multibody robotics, the\ncanonical symplectic form becomes degenerate, undermining the very invariants\nthat guarantee stability and long-term prediction. In this work, we tackle this\nfoundational limitation by introducing Presymplectification Networks (PSNs),\nthe first framework to learn the symplectification lift via Dirac structures,\nrestoring a non-degenerate symplectic geometry by embedding constrained systems\ninto a higher-dimensional manifold. Our architecture combines a recurrent\nencoder with a flow-matching objective to learn the augmented phase-space\ndynamics end-to-end. We then attach a lightweight Symplectic Network (SympNet)\nto forecast constrained trajectories while preserving energy, momentum, and\nconstraint satisfaction. We demonstrate our method on the dynamics of the\nANYmal quadruped robot, a challenging contact-rich, multibody system. To the\nbest of our knowledge, this is the first framework that effectively bridges the\ngap between constrained, dissipative mechanical systems and symplectic\nlearning, unlocking a whole new class of geometric machine learning models,\ngrounded in first principles yet adaptable from data.",
+    "url": "http://arxiv.org/abs/2506.18812v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18812v1",
+    "published": "2025-06-23T16:23:37+00:00",
+    "categories": [
+      "cs.RO",
+      "cs.LG"
+    ],
+    "arxiv_id": "2506.18812v1"
+  },
+  {
+    "title": "A Multi-view Divergence-Convergence Feature Augmentation Framework for Drug-related Microbes Prediction",
+    "authors": [
+      "Xin An",
+      "Ruijie Li",
+      "Qiao Ning",
+      "Shikai Guo",
+      "Hui Li",
+      "Qian Ma"
+    ],
+    "abstract": "In the study of drug function and precision medicine, identifying new\ndrug-microbe associations is crucial. However, current methods isolate\nassociation and similarity analysis of drug and microbe, lacking effective\ninter-view optimization and coordinated multi-view feature fusion. In our\nstudy, a multi-view Divergence-Convergence Feature Augmentation framework for\nDrug-related Microbes Prediction (DCFA_DMP) is proposed, to better learn and\nintegrate association information and similarity information. In the divergence\nphase, DCFA_DMP strengthens the complementarity and diversity between\nheterogeneous information and similarity information by performing Adversarial\nLearning method between the association network view and different similarity\nviews, optimizing the feature space. In the convergence phase, a novel\nBidirectional Synergistic Attention Mechanism is proposed to deeply synergize\nthe complementary features between different views, achieving a deep fusion of\nthe feature space. Moreover, Transformer graph learning is alternately applied\non the drug-microbe heterogeneous graph, enabling each drug or microbe node to\nfocus on the most relevant nodes. Numerous experiments demonstrate DCFA_DMP's\nsignificant performance in predicting drug-microbe associations. It also proves\neffectiveness in predicting associations for new drugs and microbes in cold\nstart experiments, further confirming its stability and reliability in\npredicting potential drug-microbe associations.",
+    "url": "http://arxiv.org/abs/2506.18797v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18797v1",
+    "published": "2025-06-23T16:03:46+00:00",
+    "categories": [
+      "cs.LG"
+    ],
+    "arxiv_id": "2506.18797v1"
+  },
+  {
+    "title": "Focus Your Attention: Towards Data-Intuitive Lightweight Vision Transformers",
+    "authors": [
+      "Suyash Gaurav",
+      "Muhammad Farhan Humayun",
+      "Jukka Heikkonen",
+      "Jatin Chaudhary"
+    ],
+    "abstract": "The evolution of Vision Transformers has led to their widespread adaptation\nto different domains. Despite large-scale success, there remain significant\nchallenges including their reliance on extensive computational and memory\nresources for pre-training on huge datasets as well as difficulties in\ntask-specific transfer learning. These limitations coupled with energy\ninefficiencies mainly arise due to the computation-intensive self-attention\nmechanism. To address these issues, we propose a novel Super-Pixel Based Patch\nPooling (SPPP) technique that generates context-aware, semantically rich, patch\nembeddings to effectively reduce the architectural complexity and improve\nefficiency. Additionally, we introduce the Light Latent Attention (LLA) module\nin our pipeline by integrating latent tokens into the attention mechanism\nallowing cross-attention operations to significantly reduce the time and space\ncomplexity of the attention module. By leveraging the data-intuitive patch\nembeddings coupled with dynamic positional encodings, our approach adaptively\nmodulates the cross-attention process to focus on informative regions while\nmaintaining the global semantic structure. This targeted attention improves\ntraining efficiency and accelerates convergence. Notably, the SPPP module is\nlightweight and can be easily integrated into existing transformer\narchitectures. Extensive experiments demonstrate that our proposed architecture\nprovides significant improvements in terms of computational efficiency while\nachieving comparable results with the state-of-the-art approaches, highlighting\nits potential for energy-efficient transformers suitable for edge deployment.\n(The code is available on our GitHub repository:\nhttps://github.com/zser092/Focused-Attention-ViT).",
+    "url": "http://arxiv.org/abs/2506.18791v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18791v1",
+    "published": "2025-06-23T16:00:57+00:00",
+    "categories": [
+      "cs.CV",
+      "cs.LG"
+    ],
+    "arxiv_id": "2506.18791v1"
+  },
+  {
+    "title": "DPG loss functions for learning parameter-to-solution maps by neural networks",
+    "authors": [
+      "Pablo Cortés Castillo",
+      "Wolfgang Dahmen",
+      "Jay Gopalakrishnan"
+    ],
+    "abstract": "We develop, analyze, and experimentally explore residual-based loss functions\nfor machine learning of parameter-to-solution maps in the context of\nparameter-dependent families of partial differential equations (PDEs). Our\nprimary concern is on rigorous accuracy certification to enhance prediction\ncapability of resulting deep neural network reduced models. This is achieved by\nthe use of variationally correct loss functions. Through one specific example\nof an elliptic PDE, details for establishing the variational correctness of a\nloss function from an ultraweak Discontinuous Petrov Galerkin (DPG)\ndiscretization are worked out. Despite the focus on the example, the proposed\nconcepts apply to a much wider scope of problems, namely problems for which\nstable DPG formulations are available. The issue of {high-contrast} diffusion\nfields and ensuing difficulties with degrading ellipticity are discussed. Both\nnumerical results and theoretical arguments illustrate that for high-contrast\ndiffusion parameters the proposed DPG loss functions deliver much more robust\nperformance than simpler least-squares losses.",
+    "url": "http://arxiv.org/abs/2506.18773v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18773v1",
+    "published": "2025-06-23T15:40:56+00:00",
+    "categories": [
+      "math.NA",
+      "cs.LG",
+      "cs.NA"
+    ],
+    "arxiv_id": "2506.18773v1"
+  },
+  {
+    "title": "Neural Total Variation Distance Estimators for Changepoint Detection in News Data",
+    "authors": [
+      "Csaba Zsolnai",
+      "Niels Lörch",
+      "Julian Arnold"
+    ],
+    "abstract": "Detecting when public discourse shifts in response to major events is crucial\nfor understanding societal dynamics. Real-world data is high-dimensional,\nsparse, and noisy, making changepoint detection in this domain a challenging\nendeavor. In this paper, we leverage neural networks for changepoint detection\nin news data, introducing a method based on the so-called learning-by-confusion\nscheme, which was originally developed for detecting phase transitions in\nphysical systems. We train classifiers to distinguish between articles from\ndifferent time periods. The resulting classification accuracy is used to\nestimate the total variation distance between underlying content distributions,\nwhere significant distances highlight changepoints. We demonstrate the\neffectiveness of this method on both synthetic datasets and real-world data\nfrom The Guardian newspaper, successfully identifying major historical events\nincluding 9/11, the COVID-19 pandemic, and presidential elections. Our approach\nrequires minimal domain knowledge, can autonomously discover significant shifts\nin public discourse, and yields a quantitative measure of change in content,\nmaking it valuable for journalism, policy analysis, and crisis monitoring.",
+    "url": "http://arxiv.org/abs/2506.18764v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18764v1",
+    "published": "2025-06-23T15:33:30+00:00",
+    "categories": [
+      "cs.LG",
+      "cs.CL",
+      "cs.CY",
+      "cs.SI"
+    ],
+    "arxiv_id": "2506.18764v1"
+  },
+  {
+    "title": "Fast State-Augmented Learning for Wireless Resource Allocation with Dual Variable Regression",
+    "authors": [
+      "Yigit Berkay Uslu",
+      "Navid NaderiAlizadeh",
+      "Mark Eisen",
+      "Alejandro Ribeiro"
+    ],
+    "abstract": "We consider resource allocation problems in multi-user wireless networks,\nwhere the goal is to optimize a network-wide utility function subject to\nconstraints on the ergodic average performance of users. We demonstrate how a\nstate-augmented graph neural network (GNN) parametrization for the resource\nallocation policy circumvents the drawbacks of the ubiquitous dual subgradient\nmethods by representing the network configurations (or states) as graphs and\nviewing dual variables as dynamic inputs to the model, viewed as graph signals\nsupported over the graphs. Lagrangian maximizing state-augmented policies are\nlearned during the offline training phase, and the dual variables evolve\nthrough gradient updates while executing the learned state-augmented policies\nduring the inference phase. Our main contributions are to illustrate how\nnear-optimal initialization of dual multipliers for faster inference can be\naccomplished with dual variable regression, leveraging a secondary GNN\nparametrization, and how maximization of the Lagrangian over the multipliers\nsampled from the dual descent dynamics substantially improves the training of\nstate-augmented models. We demonstrate the superior performance of the proposed\nalgorithm with extensive numerical experiments in a case study of transmit\npower control. Finally, we prove a convergence result and an exponential\nprobability bound on the excursions of the dual function (iterate) optimality\ngaps.",
+    "url": "http://arxiv.org/abs/2506.18748v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18748v1",
+    "published": "2025-06-23T15:20:58+00:00",
+    "categories": [
+      "eess.SP",
+      "cs.LG"
+    ],
+    "arxiv_id": "2506.18748v1"
+  },
+  {
+    "title": "On the Existence of Universal Simulators of Attention",
+    "authors": [
+      "Debanjan Dutta",
+      "Faizanuddin Ansari",
+      "Anish Chakrabarty",
+      "Swagatam Das"
+    ],
+    "abstract": "Prior work on the learnability of transformers has established its capacity\nto approximate specific algorithmic patterns through training under restrictive\narchitectural assumptions. Fundamentally, these arguments remain data-driven\nand therefore can only provide a probabilistic guarantee. Expressivity, on the\ncontrary, has theoretically been explored to address the problems\n\\emph{computable} by such architecture. These results proved the\nTuring-completeness of transformers, investigated bounds focused on circuit\ncomplexity, and formal logic. Being at the crossroad between learnability and\nexpressivity, the question remains: \\emph{can transformer architectures exactly\nsimulate an arbitrary attention mechanism, or in particular, the underlying\noperations?} In this study, we investigate the transformer encoder's ability to\nsimulate a vanilla attention mechanism. By constructing a universal simulator\n$\\mathcal{U}$ composed of transformer encoders, we present algorithmic\nsolutions to identically replicate attention outputs and the underlying\nelementary matrix and activation operations via RASP, a formal framework for\ntransformer computation. Our proofs, for the first time, show the existence of\nan algorithmically achievable data-agnostic solution, previously known to be\napproximated only by learning.",
+    "url": "http://arxiv.org/abs/2506.18739v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18739v1",
+    "published": "2025-06-23T15:15:25+00:00",
+    "categories": [
+      "cs.LG",
+      "cs.AI"
+    ],
+    "arxiv_id": "2506.18739v1"
+  },
+  {
+    "title": "Multi-modal Anchor Gated Transformer with Knowledge Distillation for Emotion Recognition in Conversation",
+    "authors": [
+      "Jie Li",
+      "Shifei Ding",
+      "Lili Guo",
+      "Xuan Li"
+    ],
+    "abstract": "Emotion Recognition in Conversation (ERC) aims to detect the emotions of\nindividual utterances within a conversation. Generating efficient and\nmodality-specific representations for each utterance remains a significant\nchallenge. Previous studies have proposed various models to integrate features\nextracted using different modality-specific encoders. However, they neglect the\nvarying contributions of modalities to this task and introduce high complexity\nby aligning modalities at the frame level. To address these challenges, we\npropose the Multi-modal Anchor Gated Transformer with Knowledge Distillation\n(MAGTKD) for the ERC task. Specifically, prompt learning is employed to enhance\ntextual modality representations, while knowledge distillation is utilized to\nstrengthen representations of weaker modalities. Furthermore, we introduce a\nmulti-modal anchor gated transformer to effectively integrate utterance-level\nrepresentations across modalities. Extensive experiments on the IEMOCAP and\nMELD datasets demonstrate the effectiveness of knowledge distillation in\nenhancing modality representations and achieve state-of-the-art performance in\nemotion recognition. Our code is available at:\nhttps://github.com/JieLi-dd/MAGTKD.",
+    "url": "http://arxiv.org/abs/2506.18716v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18716v1",
+    "published": "2025-06-23T14:53:22+00:00",
+    "categories": [
+      "cs.LG",
+      "cs.CL"
+    ],
+    "arxiv_id": "2506.18716v1"
+  },
+  {
+    "title": "SaGIF: Improving Individual Fairness in Graph Neural Networks via Similarity Encoding",
+    "authors": [
+      "Yuchang Zhu",
+      "Jintang Li",
+      "Huizhe Zhang",
+      "Liang Chen",
+      "Zibin Zheng"
+    ],
+    "abstract": "Individual fairness (IF) in graph neural networks (GNNs), which emphasizes\nthe need for similar individuals should receive similar outcomes from GNNs, has\nbeen a critical issue. Despite its importance, research in this area has been\nlargely unexplored in terms of (1) a clear understanding of what induces\nindividual unfairness in GNNs and (2) a comprehensive consideration of\nidentifying similar individuals. To bridge these gaps, we conduct a preliminary\nanalysis to explore the underlying reason for individual unfairness and observe\ncorrelations between IF and similarity consistency, a concept introduced to\nevaluate the discrepancy in identifying similar individuals based on graph\nstructure versus node features. Inspired by our observations, we introduce two\nmetrics to assess individual similarity from two distinct perspectives:\ntopology fusion and feature fusion. Building upon these metrics, we propose\nSimilarity-aware GNNs for Individual Fairness, named SaGIF. The key insight\nbehind SaGIF is the integration of individual similarities by independently\nlearning similarity representations, leading to an improvement of IF in GNNs.\nOur experiments on several real-world datasets validate the effectiveness of\nour proposed metrics and SaGIF. Specifically, SaGIF consistently outperforms\nstate-of-the-art IF methods while maintaining utility performance. Code is\navailable at: https://github.com/ZzoomD/SaGIF.",
+    "url": "http://arxiv.org/abs/2506.18696v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.18696v1",
+    "published": "2025-06-23T14:34:26+00:00",
+    "categories": [
+      "cs.LG"
+    ],
+    "arxiv_id": "2506.18696v1"
+  }
+]
