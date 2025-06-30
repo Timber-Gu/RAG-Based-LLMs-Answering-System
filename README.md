@@ -1,173 +1,222 @@
-# ML Q&A Assistant - Phase 1 Implementation
+# LangChain ML Q&A Assistant
 
-Advanced ML Q&A system with Multi-Agent System and RAG (Retrieval-Augmented Generation) for Deep Learning and Neural Networks.
+A clean, well-organized multi-agent system for Machine Learning Q&A using **LangChain framework**. This project demonstrates proper use of LangChain agents with RAG capabilities for ML/DL domain expertise.
+
+## 🎯 What This Project Does
+
+- **Multi-Agent System**: 3 specialized LangChain agents (Research, Theory, Implementation)
+- **RAG Integration**: ChromaDB vector store for knowledge retrieval
+- **Clean Architecture**: Simple, maintainable code using LangChain best practices
+- **No Over-Engineering**: Focused implementation without unnecessary complexity
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### 1. Setup
 ```bash
-pip install -r requirements.txt
+# Clone or download the project
+# Run the setup script
+python setup_langchain.py
 ```
 
-### 2. Set up Environment
+### 2. Configure API Key
+Edit `.env` file with your OpenAI API key:
+```env
+OPENAI_API_KEY=your_actual_api_key_here
+```
+
+### 3. Run the System
+
+**Interactive Mode:**
 ```bash
-# Copy example environment file
-cp .env.example .env
-
-# Edit .env with your API keys
-# You need: OPENAI_API_KEY and PINECONE_API_KEY
+python main.py
 ```
 
-### 3. Run Setup Script
+**API Server:**
 ```bash
-python scripts/setup_phase1.py
+python -m src.api.langchain_server
 ```
+Then visit: http://localhost:8000/docs
 
-### 4. Start the System
-```bash
-# Terminal 1: Start API server
-python -m src.api.server
-
-# Terminal 2: Start Streamlit UI
-streamlit run src/ui/streamlit_app.py
-```
-
-## 📋 Phase 1 Features
-
-### ✅ Completed
-- **Data Curation**: Automated collection of 100+ Deep Learning papers from arXiv
-- **Content Extraction**: PDF processing and knowledge base creation
-- **RAG Pipeline**: Pinecone vector store with semantic search
-- **Multi-Agent System**: 3 specialized agents (Research, Theory, Implementation)
-- **Agent Orchestration**: Smart routing and response combination
-- **Web Interface**: FastAPI backend + Streamlit frontend
-- **Knowledge Base**: Processed papers with embeddings
-
-### 🔧 Components
-
-#### 1. Data Curation (`src/data_curation/`)
-- `paper_collector.py`: Collects papers from arXiv API
-- `content_extractor.py`: Processes PDFs and creates knowledge chunks
-
-#### 2. RAG System (`src/rag/`)
-- `vector_store.py`: Pinecone integration with semantic search
-
-#### 3. Multi-Agent System (`src/agents/`)
-- `base_agent.py`: Base agent class with OpenAI integration
-- `research_agent.py`: Literature analysis and synthesis
-- `theory_agent.py`: Mathematical explanations and derivations
-- `implementation_agent.py`: Code generation and practical guidance
-- `orchestrator.py`: Agent coordination and response combination
-
-#### 4. API & UI (`src/api/`, `src/ui/`)
-- `server.py`: FastAPI backend with REST endpoints
-- `streamlit_app.py`: Interactive web interface
-
-## 🎯 Usage Examples
-
-### Research Questions
-- "What papers discuss attention mechanisms?"
-- "Recent work on transformers"
-- "State of the art in computer vision"
-
-### Theoretical Questions
-- "Explain backpropagation mathematically"
-- "How does gradient descent work?"
-- "Derive the loss function for neural networks"
-
-### Implementation Questions
-- "How to implement a CNN in PyTorch?"
-- "Show me GAN code examples"
-- "Build a transformer from scratch"
-
-## 🔧 Configuration
-
-Key settings in `src/config.py`:
-- `MAX_PAPERS`: Number of papers to collect (default: 100)
-- `EMBEDDING_MODEL`: Sentence transformer model
-- `PINECONE_INDEX_NAME`: Vector database index name
-- `CHUNK_SIZE`: Text chunk size for embeddings
-
-## 📊 System Architecture
+## 🏗️ Architecture
 
 ```
-Web Interface (Streamlit)
+User Query
     ↓
-API Server (FastAPI)
-    ↓
-Agent Orchestrator
+LangChain Router
     ↓
 ┌─────────────┬─────────────┬─────────────┐
 │ Research    │ Theory      │ Implementation │
 │ Agent       │ Agent       │ Agent          │
+│ (LangChain) │ (LangChain) │ (LangChain)    │
 └─────────────┴─────────────┴─────────────┘
     ↓
-RAG Pipeline (Pinecone + Sentence Transformers)
+RAG Tool (ChromaDB)
     ↓
-Knowledge Base (Processed Papers)
+Knowledge Base
 ```
 
-## 🛠️ Development
+## 🤖 Agents
 
-### Project Structure
+### Research Agent
+- **Purpose**: Literature analysis and academic synthesis
+- **Keywords**: paper, research, study, literature, recent
+- **Example**: "What papers discuss attention mechanisms?"
+
+### Theory Agent  
+- **Purpose**: Mathematical concepts and explanations
+- **Keywords**: explain, what is, theory, mathematical, algorithm
+- **Example**: "Explain backpropagation mathematically"
+
+### Implementation Agent
+- **Purpose**: Code generation and practical guidance  
+- **Keywords**: code, implement, pytorch, tensorflow, example
+- **Example**: "How to implement a CNN in PyTorch?"
+
+## 📁 Project Structure
+
 ```
 Project/
 ├── src/
-│   ├── agents/          # Multi-agent system
-│   ├── api/             # FastAPI server
-│   ├── data_curation/   # Paper collection and processing
-│   ├── rag/             # RAG pipeline
-│   ├── ui/              # Streamlit interface
-│   └── config.py        # Configuration
-├── data/                # Data files (papers, knowledge base)
-├── scripts/             # Setup and utility scripts
-├── requirements.txt     # Dependencies
-└── README.md           # This file
+│   ├── agents/
+│   │   └── langchain_agents.py    # LangChain multi-agent system
+│   ├── api/
+│   │   └── langchain_server.py    # FastAPI server
+│   └── config.py                  # Configuration
+├── data/                          # Knowledge base and papers
+├── main.py                        # Interactive interface
+├── setup_langchain.py            # Setup script
+├── requirements.txt               # Dependencies
+└── README_LangChain.md           # This file
 ```
 
-### Running Tests
+## 🔧 Key Features
+
+### Proper LangChain Usage
+- **LangChain Agents**: Using `create_openai_functions_agent`
+- **Agent Executors**: Proper agent execution with tools
+- **RAG Tool**: LangChain tool for knowledge retrieval
+- **Chat History**: Support for conversation context
+
+### Simple Dependencies
+- **No PyTorch conflicts**: Uses ChromaDB instead of Pinecone
+- **Clean requirements**: Only essential packages
+- **Fast startup**: Minimal initialization time
+
+### Well-Organized Code
+- **Single responsibility**: Each component has clear purpose
+- **Easy to extend**: Add new agents or tools easily
+- **Type hints**: Full typing for better development
+- **Error handling**: Robust error handling throughout
+
+## 🧪 Testing
+
+### Health Check
 ```bash
-# Test paper collection
-python -m src.data_curation.paper_collector
-
-# Test content extraction
-python -m src.data_curation.content_extractor
-
-# Test RAG pipeline
-python -m src.rag.vector_store
-
-# Test agent orchestrator
-python -m src.agents.orchestrator
+curl http://localhost:8000/health
 ```
 
-## 🚀 Next Steps (Phase 2)
+### Test Query
+```bash
+curl -X POST http://localhost:8000/query \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What are neural networks?"}'
+```
 
-- [ ] Supervised Fine-Tuning (SFT) of specialized models
-- [ ] Expanded dataset with 1500+ Q&A pairs
-- [ ] Enhanced web interface with conversation history
-- [ ] Performance optimization and caching
-- [ ] Advanced prompt engineering techniques
+### Available Agents
+```bash
+curl http://localhost:8000/agents
+```
 
-## 📝 Notes
+## 📝 Example Queries
 
-- Start with 20 papers for testing (configurable)
-- RAG system requires Pinecone free tier account
-- OpenAI API usage is optimized for cost efficiency
-- All components are modular and extensible
+### Research Questions
+- "Recent papers on transformer architectures"
+- "State of the art in computer vision"
+- "What research exists on attention mechanisms?"
+
+### Theory Questions  
+- "Explain gradient descent mathematically"
+- "How does backpropagation work?"
+- "What is a convolutional neural network?"
+
+### Implementation Questions
+- "How to implement a neural network in PyTorch?"
+- "Show me a CNN code example"
+- "Best practices for training deep learning models"
+
+## 🛠️ Customization
+
+### Add New Agent
+```python
+# In langchain_agents.py
+def _setup_agents(self):
+    # Add new agent
+    new_prompt = ChatPromptTemplate.from_messages([...])
+    new_agent = create_openai_functions_agent(...)
+    self.agents['new_agent'] = AgentExecutor(...)
+```
+
+### Modify Routing Logic
+```python
+def route_query(self, query: str) -> str:
+    # Add custom routing logic
+    if 'your_keyword' in query.lower():
+        return 'your_agent'
+    return 'theory'  # default
+```
+
+### Add New Tools
+```python
+def _create_new_tool(self):
+    def tool_function(input: str) -> str:
+        # Your tool logic here
+        return result
+    
+    return Tool(
+        name="tool_name",
+        description="Tool description",
+        func=tool_function
+    )
+```
 
 ## 🔍 Troubleshooting
 
 ### Common Issues
 
-1. **API Key Errors**: Ensure `.env` file has valid API keys
-2. **Pinecone Connection**: Check environment and API key
-3. **PDF Processing**: Some PDFs may fail to extract text
-4. **Memory Usage**: Large knowledge bases may require more RAM
+1. **"Agents not initialized"**
+   - Check your OpenAI API key in `.env`
+   - Ensure you have internet connection
+
+2. **"Knowledge base not available"**
+   - This is normal if you haven't added documents yet
+   - Agents will work without knowledge base
+
+3. **Import errors**
+   - Run `python setup_langchain.py` to install dependencies
+   - Make sure you're in the project root directory
 
 ### Getting Help
+- Check the health endpoint: `/health`
+- Run with verbose mode for detailed logs
+- Verify `.env` file configuration
 
-Check the logs in the console output for detailed error messages. Each component has comprehensive error handling and logging.
+## 🎯 Next Steps
+
+### Add More Data
+1. Add papers to `data/papers/` directory
+2. Update `data/knowledge_base.json` with structured content
+3. Restart the system to reload vector store
+
+### Expand Agents
+1. Add domain-specific agents (e.g., Computer Vision, NLP)
+2. Create specialized tools for each domain
+3. Implement more sophisticated routing logic
+
+### Scale Up
+1. Use more powerful OpenAI models (GPT-4)
+2. Add more sophisticated RAG techniques
+3. Implement conversation memory and history
 
 ---
 
-Built with ❤️ for the ML community 
+**Built with LangChain ❤️ - Clean, Simple, Effective** 
