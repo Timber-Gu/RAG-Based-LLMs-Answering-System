@@ -1,6 +1,6 @@
 # Multi-Model LangChain ML Q&A Assistant with Pinecone Hosted Embeddings
 
-A sophisticated **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, powered by different specialized LLMs and **Pinecone's hosted embeddings**:
+A **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, powered by different specialized LLMs and **Pinecone's hosted embeddings**:
 
 - **Research Agent**: Ollama (Llama 3.1) - For literature reviews and research findings
 - **Theory Agent**: GPT-4 - For mathematical explanations and theory
@@ -9,19 +9,19 @@ A sophisticated **RAG-based multi-agent system** for Machine Learning and Deep L
 
 ## 🚀 Key Features
 
-### 🎯 LangChain-First Architecture
+### LangChain-First Architecture
 - **Complete LangChain Integration**: Uses LangChain agents, tools, and vector stores
 - **Multi-Agent System**: Intelligent routing to specialized agents
 - **RAG Integration**: Seamless knowledge retrieval using LangChain tools
 - **Chat History Support**: Conversation context management
 
-### 🌟 Pinecone Hosted Embeddings
+### Pinecone Hosted Embeddings
 - **No Local Setup Required**: Uses Pinecone's hosted `llama-text-embed-v2` model
 - **High Performance**: 1024-dimensional vectors with optimized search
 - **Automatic Embedding**: Text is automatically embedded during upsert and search
 - **Scalable**: Cloud-native vector storage and retrieval
 
-### 🤖 Specialized Agents
+### Specialized Agents
 - **Smart Routing**: Automatic agent selection based on query type
 - **Domain Expertise**: Each agent optimized for specific ML/DL tasks
 - **Fallback Handling**: Graceful degradation if specific models unavailable
@@ -182,7 +182,7 @@ Knowledge Base (ML/DL Papers & Content)
 
 ## 🤖 Agent Specializations
 
-### 🔬 Research Agent (Ollama Llama 3.1)
+### Research Agent (Ollama Llama 3.1)
 - **Purpose**: Literature analysis and academic synthesis
 - **Triggers**: `paper`, `research`, `study`, `literature`, `recent`, `survey`
 - **Example**: *"Find recent papers about transformer architectures"*
@@ -198,7 +198,7 @@ Knowledge Base (ML/DL Papers & Content)
 - **Example**: *"Explain the mathematical foundations of neural networks"*
 - **CoT Structure**: Problem Understanding → Knowledge Retrieval → Step-by-Step Analysis → Intuitive Explanation → Key Takeaways
 
-### 💻 Implementation Agent (Claude 3.5 Sonnet)
+### Implementation Agent (Claude 3.5 Sonnet)
 - **Purpose**: Code generation and practical guidance
 - **Triggers**: `code`, `implement`, `pytorch`, `tensorflow`, `example`, `how to`
 - **Example**: *"Show me code implementation of a transformer architecture"*
@@ -267,7 +267,7 @@ RAG-Based-LLMs-Answering-System/
 - **Graceful Degradation**: System works even without RAG knowledge base
 - **Configuration Validation**: Comprehensive environment variable checking
 
-## 🚀 Advanced Usage
+## Advanced Usage
 
 ### Adding Knowledge
 1. Add documents to `data/knowledge_base.json`
@@ -290,7 +290,7 @@ python -m src.api.langchain_server
 # Visit: http://localhost:8000/docs
 ```
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 1. **"Knowledge base not available"** - This is normal if no documents loaded yet
@@ -306,21 +306,21 @@ health = agents.health_check()
 print(health)
 ```
 
-## 📊 Performance Features
+## Performance Features
 
 - **Batch Processing**: Optimized document upserts (96 records/batch for hosted embeddings)
 - **Parallel Search**: Efficient vector similarity search
 - **Memory Management**: Proper cleanup of vector store connections
 - **Cache Optimization**: Environment variable caching with override support
 
-## 🛡️ Security Features
+## Security Features
 
 - **API Key Protection**: `.env` files excluded from Git
 - **Sanitized Uploads**: Clean text processing for vector storage
 - **Error Isolation**: Robust error handling prevents system crashes
 - **Configuration Validation**: Ensures all required settings are present
 
-## 📈 Future Enhancements
+## Future Enhancements
 
 - [ ] Add more specialized agents (Computer Vision, NLP, etc.)
 - [ ] Implement conversation memory and context tracking
@@ -339,4 +339,4 @@ Built with:
 
 ---
 
-**🎯 A complete RAG-based multi-agent system for ML/DL expertise with zero local embedding setup!** 
+** A complete RAG-based multi-agent system for ML/DL expertise with zero local embedding setup!** 
