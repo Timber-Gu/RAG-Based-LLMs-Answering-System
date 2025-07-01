@@ -1,36 +1,66 @@
-# Multi-Model LangChain ML Q&A Assistant
+# Multi-Model LangChain ML Q&A Assistant with Pinecone Hosted Embeddings
 
-A sophisticated multi-agent system for Machine Learning and Deep Learning Q&A, powered by different specialized LLMs and **Pinecone's hosted embeddings**:
+A sophisticated **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, powered by different specialized LLMs and **Pinecone's hosted embeddings**:
 
 - **Research Agent**: Ollama (Llama 3.1) - For literature reviews and research findings
 - **Theory Agent**: GPT-4 - For mathematical explanations and theory
 - **Implementation Agent**: Claude 3.5 Sonnet - For code generation and practical examples
 - **Knowledge Base**: Pinecone with hosted `llama-text-embed-v2` - For semantic search
 
-## 🚀 Quick Setup
+## 🚀 Key Features
+
+### 🎯 LangChain-First Architecture
+- **Complete LangChain Integration**: Uses LangChain agents, tools, and vector stores
+- **Multi-Agent System**: Intelligent routing to specialized agents
+- **RAG Integration**: Seamless knowledge retrieval using LangChain tools
+- **Chat History Support**: Conversation context management
+
+### 🌟 Pinecone Hosted Embeddings
+- **No Local Setup Required**: Uses Pinecone's hosted `llama-text-embed-v2` model
+- **High Performance**: 1024-dimensional vectors with optimized search
+- **Automatic Embedding**: Text is automatically embedded during upsert and search
+- **Scalable**: Cloud-native vector storage and retrieval
+
+### 🤖 Specialized Agents
+- **Smart Routing**: Automatic agent selection based on query type
+- **Domain Expertise**: Each agent optimized for specific ML/DL tasks
+- **Fallback Handling**: Graceful degradation if specific models unavailable
+
+## 🛠️ Quick Setup
 
 ### Prerequisites
-- OpenAI API Key (for GPT-4)
-- Anthropic API Key (for Claude) 
-- **Pinecone API Key** (for hosted embeddings)
-- Ollama (only for research agent)
+- **OpenAI API Key** (for GPT-4 Theory Agent)
+- **Anthropic API Key** (for Claude Implementation Agent)  
+- **Pinecone API Key** (for hosted embeddings and vector storage)
+- **Ollama** (optional, for Research Agent)
 
 ### Installation
 
-1. **Install Dependencies**
-```bash
-pip install -r requirements.txt
-```
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Timber-Gu/RAG-Based-LLMs-Answering-System.git
+   cd RAG-Based-LLMs-Answering-System
+   ```
 
-2. **Install and Setup Ollama** (for Research Agent only)
-```bash
-# Install Ollama from https://ollama.ai/
-# Then pull the required model:
-ollama pull llama3.1
-```
+2. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-3. **Configure API Keys**
-Create a `.env` file:
+3. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your actual API keys
+   ```
+
+4. **Run the System**
+   ```bash
+   python main.py
+   ```
+
+## ⚙️ Configuration
+
+### Environment Variables (.env)
 ```bash
 # Required API Keys
 OPENAI_API_KEY=your_openai_api_key_here
@@ -38,156 +68,194 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 PINECONE_API_KEY=your_pinecone_api_key_here
 
 # Pinecone Configuration
-VECTOR_STORE_TYPE=pinecone
 PINECONE_INDEX_NAME=myproject
-PINECONE_ENVIRONMENT=us-east-1
-EMBEDDING_MODEL=llama-text-embed-v2  # Hosted by Pinecone
+VECTOR_STORE_TYPE=pinecone
+EMBEDDING_MODEL=llama-text-embed-v2
 
 # Model Configuration
-RESEARCH_MODEL=llama3.1
 THEORY_MODEL=gpt-4
+RESEARCH_MODEL=llama3.1
 IMPLEMENTATION_MODEL=claude-3-5-sonnet-20241022
+
+# Optional: Ollama Configuration
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_API_KEY=
+
+# Agent Settings
+AGENT_TEMPERATURE=0.3
+KNOWLEDGE_BASE_FILE=data/knowledge_base.json
 ```
 
-4. **Run the Application**
-```bash
-python main.py
+## 🏗️ Architecture
+
+```
+User Query
+    ↓
+LangChain Router
+    ↓
+┌─────────────┬─────────────┬─────────────┐
+│ Research    │ Theory      │ Implementation │
+│ Agent       │ Agent       │ Agent          │
+│ (Llama 3.1) │ (GPT-4)     │ (Claude 3.5)   │
+└─────────────┴─────────────┴─────────────┘
+    ↓
+RAG Tool (LangChain + Pinecone)
+    ↓
+Pinecone Vector Store (Hosted llama-text-embed-v2)
+    ↓
+Knowledge Base (ML/DL Papers & Content)
 ```
 
 ## 🤖 Agent Specializations
 
-### Research Agent (Ollama - Llama 3.1)
-- Literature reviews and paper summaries
-- Recent research findings and trends
-- Academic citations and references
-- **Runs locally** - No API costs!
+### 🔬 Research Agent (Ollama Llama 3.1)
+- **Purpose**: Literature analysis and academic synthesis
+- **Triggers**: `paper`, `research`, `study`, `literature`, `recent`, `survey`
+- **Example**: *"Find recent papers about transformer architectures"*
 
-### Theory Agent (OpenAI GPT-4)
-- Mathematical foundations and derivations
-- Algorithm explanations
-- Conceptual understanding
-- Step-by-step breakdowns
+### 📐 Theory Agent (GPT-4)
+- **Purpose**: Mathematical concepts and theoretical explanations
+- **Triggers**: `explain`, `theory`, `mathematical`, `algorithm`, `concept`
+- **Example**: *"Explain the mathematical foundations of neural networks"*
 
-### Implementation Agent (Claude 3.5 Sonnet)
-- Code examples and implementations
-- Best practices and optimizations
-- Debugging and troubleshooting
-- Framework-specific guidance
+### 💻 Implementation Agent (Claude 3.5 Sonnet)
+- **Purpose**: Code generation and practical guidance
+- **Triggers**: `code`, `implement`, `pytorch`, `tensorflow`, `example`, `how to`
+- **Example**: *"Show me code implementation of a transformer architecture"*
 
-### Knowledge Base (Pinecone + Hosted Embeddings)
-- **Hosted `llama-text-embed-v2` embeddings** - No local setup required!
-- Semantic search across ML/DL papers and documentation
-- Automatic embedding generation and indexing
-- Fast, scalable vector search
+## 📁 Project Structure
 
-## 🛠️ Configuration
+```
+RAG-Based-LLMs-Answering-System/
+├── src/
+│   ├── agents/
+│   │   └── langchain_agents.py    # Multi-agent system with RAG
+│   ├── api/
+│   │   └── langchain_server.py    # FastAPI server (if needed)
+│   └── config.py                  # Configuration management
+├── data/
+│   ├── knowledge_base.json        # Structured knowledge content
+│   ├── papers/                    # PDF papers (optional)
+│   └── papers_metadata.json       # Paper metadata
+├── main.py                        # Interactive CLI interface
+├── requirements.txt               # Python dependencies
+├── .env.example                   # Environment template
+├── .gitignore                     # Git ignore rules
+└── README.md                      # This documentation
+```
 
-The system automatically routes queries based on keywords:
-- **"paper", "research", "study"** → Research Agent
-- **"explain", "theory", "mathematical"** → Theory Agent  
-- **"code", "implement", "example"** → Implementation Agent
+## 🧪 Example Queries
 
-### Key Benefits of Pinecone Hosted Embeddings
+### Research Questions
+```
+"What are the latest developments in transformer architectures?"
+"Find research papers about attention mechanisms"
+"Recent advances in computer vision models"
+```
 
-✅ **No Local Model Setup**: Embeddings are generated by Pinecone's hosted `llama-text-embed-v2` model  
-✅ **High Performance**: 1024-dimensional vectors with superior retrieval quality  
-✅ **Multilingual Support**: Supports 26 languages including English, Spanish, Chinese, Hindi  
-✅ **Fast Query Speed**: p99 latencies 12x faster than OpenAI Large  
-✅ **No Local Resources**: No need to download or run embedding models locally
+### Theory Questions  
+```
+"Explain backpropagation mathematically"
+"What is the mathematical foundation of neural networks?"
+"How does gradient descent work in deep learning?"
+```
 
-## 🔧 API Usage
+### Implementation Questions
+```
+"Show me PyTorch code for a transformer model"
+"How to implement attention mechanism in Python?"
+"Best practices for training deep learning models"
+```
 
+## 🔧 Key Technical Features
+
+### LangChain Integration
+- **Agent Executors**: Proper LangChain agent execution with tools
+- **RAG Tools**: LangChain-compatible knowledge retrieval tools
+- **Vector Store**: LangChain `PineconeVectorStore` with hosted embeddings
+- **Prompt Management**: Structured prompt templates for each agent
+
+### Pinecone Hosted Embeddings
+- **Automatic Embedding**: No local embedding models required
+- **High Performance**: Optimized `llama-text-embed-v2` model (1024 dimensions)
+- **Proper API Usage**: Correct `upsert_records` and `search` API calls
+- **Metadata Handling**: Clean metadata structure for retrieval
+
+### Error Handling & Fallbacks
+- **Model Fallbacks**: GPT-4 fallback if Ollama/Claude unavailable
+- **Graceful Degradation**: System works even without RAG knowledge base
+- **Configuration Validation**: Comprehensive environment variable checking
+
+## 🚀 Advanced Usage
+
+### Adding Knowledge
+1. Add documents to `data/knowledge_base.json`
+2. Or place PDF papers in `data/papers/`
+3. Restart system to reload vector store
+
+### Customizing Agents
+```python
+# In langchain_agents.py
+def route_query(self, query: str) -> str:
+    # Add custom routing logic
+    if 'your_keyword' in query.lower():
+        return 'your_agent'
+    return 'theory'  # default
+```
+
+### API Server (Optional)
+```bash
+python -m src.api.langchain_server
+# Visit: http://localhost:8000/docs
+```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+1. **"Knowledge base not available"** - This is normal if no documents loaded yet
+2. **Agent routing incorrect** - Check keyword triggers in `route_query()`
+3. **Pinecone errors** - Verify API key and index configuration
+4. **Model unavailable** - Check API keys and model names
+
+### Health Check
 ```python
 from src.agents.langchain_agents import LangChainMLAgents
-
-# Initialize agents with Pinecone hosted embeddings
 agents = LangChainMLAgents()
-
-# Process queries with semantic search
-result = agents.process_query("Explain backpropagation algorithm")
-print(f"Agent used: {result['agent_used']}")
-print(f"Response: {result['response']}")
-
-# Check system health
 health = agents.health_check()
-print(f"All models configured: {health['all_llms_configured']}")
+print(health)
 ```
 
-## 🌐 Web Interface
+## 📊 Performance Features
 
-Start the FastAPI server:
-```bash
-uvicorn src.api.langchain_server:app --reload
-```
+- **Batch Processing**: Optimized document upserts (96 records/batch for hosted embeddings)
+- **Parallel Search**: Efficient vector similarity search
+- **Memory Management**: Proper cleanup of vector store connections
+- **Cache Optimization**: Environment variable caching with override support
 
-Then visit: http://localhost:8000/docs
+## 🛡️ Security Features
 
-## 📊 Health Check
+- **API Key Protection**: `.env` files excluded from Git
+- **Sanitized Uploads**: Clean text processing for vector storage
+- **Error Isolation**: Robust error handling prevents system crashes
+- **Configuration Validation**: Ensures all required settings are present
 
-Test your setup:
-```bash
-curl http://localhost:8000/health
-```
+## 📈 Future Enhancements
 
-Expected response when properly configured:
-```json
-{
-  "status": "healthy",
-  "gpt4_connection": true,
-  "ollama_connection": true, 
-  "claude_connection": true,
-  "pinecone_connection": true,
-  "all_llms_configured": true
-}
-```
+- [ ] Add more specialized agents (Computer Vision, NLP, etc.)
+- [ ] Implement conversation memory and context tracking
+- [ ] Add support for multiple knowledge domains
+- [ ] Integrate with more vector store providers
+- [ ] Add web interface for better user experience
 
-## 🎯 Query Examples
+## 🙏 Acknowledgments
 
-- **Research**: "What are recent advances in transformer architectures?"
-- **Theory**: "Explain the mathematical foundation of attention mechanisms"
-- **Implementation**: "Show me PyTorch code for a transformer block"
+Built with:
+- **[LangChain](https://python.langchain.com/)** - AI application framework
+- **[Pinecone](https://www.pinecone.io/)** - Vector database with hosted embeddings  
+- **[OpenAI](https://openai.com/)** - GPT-4 language model
+- **[Anthropic](https://www.anthropic.com/)** - Claude 3.5 Sonnet
+- **[Ollama](https://ollama.ai/)** - Local Llama model serving
 
-## 🛟 Troubleshooting
+---
 
-### Pinecone Setup
-- Get Pinecone API key: https://app.pinecone.io/
-- Ensure `PINECONE_API_KEY` is set in `.env` file
-- The system automatically creates indexes with hosted embeddings
-
-### Ollama Issues (Research Agent Only)
-```bash
-# Check if Ollama is running
-ollama list
-
-# Start Ollama service
-ollama serve
-
-# Pull required model
-ollama pull llama3.1
-```
-
-### API Key Issues
-- Get OpenAI API key: https://platform.openai.com/api-keys
-- Get Anthropic API key: https://console.anthropic.com/
-- Get Pinecone API key: https://app.pinecone.io/
-- Ensure all keys are properly set in `.env` file
-
-## 📈 Cost Optimization
-
-- **Research queries**: Free (Ollama runs locally)
-- **Theory queries**: Moderate cost (GPT-4)
-- **Implementation queries**: Low-moderate cost (Claude)
-- **Embeddings**: Low cost (Pinecone hosted embeddings)
-
-The system is designed to balance performance with cost-effectiveness by using:
-- Local Ollama for research (free)
-- Pinecone hosted embeddings for semantic search (very cost-effective)
-- Cloud LLMs only when needed for specialized tasks
-
-## 🆕 What's New
-
-- ✅ **Simplified Setup**: No need to install or configure local embedding models
-- ✅ **Better Performance**: Pinecone's `llama-text-embed-v2` provides superior retrieval quality
-- ✅ **Automatic Scaling**: Pinecone handles all embedding generation and indexing
-- ✅ **Multilingual Support**: Built-in support for 26 languages
-- ✅ **Cost Effective**: Pay only for what you use with Pinecone's hosted service 
+**🎯 A complete RAG-based multi-agent system for ML/DL expertise with zero local embedding setup!** 
