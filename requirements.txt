@@ -1,21 +1,21 @@
 # LangChain Multi-Agent Framework
 langchain>=0.1.0
 langchain-openai>=0.0.8
+langchain-anthropic>=0.1.0
 langchain-community>=0.0.20
 langchain-core>=0.1.23
 
-# OpenAI Integration
+# LLM Integrations
 openai>=1.0.0
+anthropic>=0.18.0
 
-# Vector Store (simplified)
-chromadb>=0.4.0
-sentence-transformers>=2.2.0
-langchain-huggingface>=0.0.1
+# Vector Store with Hosted Embeddings
+pinecone>=3.0.0              # Cloud vector store with hosted llama-text-embed-v2
+langchain-pinecone>=0.1.0    # LangChain Pinecone integration
 
 # Web Framework
 fastapi>=0.100.0
 uvicorn>=0.20.0
-streamlit>=1.28.0
 
 # Data Processing
 pandas>=2.0.0

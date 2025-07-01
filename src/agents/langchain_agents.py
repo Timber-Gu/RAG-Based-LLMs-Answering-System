@@ -3,15 +3,16 @@ LangChain-based Multi-Agent System for ML Q&A
 Clean implementation using LangChain's agent framework
 """
 from typing import List, Dict, Any, Optional
-from langchain.agents import AgentExecutor, create_openai_functions_agent
+from langchain.agents import AgentExecutor, create_openai_functions_agent, create_tool_calling_agent
 from langchain.agents.format_scratchpad import format_to_openai_function_messages
 from langchain.agents.output_parsers import OpenAIFunctionsAgentOutputParser
 from langchain.tools import Tool
 from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
+from langchain_ollama import ChatOllama
+
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
-from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 import os
@@ -22,31 +23,74 @@ class LangChainMLAgents:
     """LangChain-based multi-agent system for ML Q&A"""
     
     def __init__(self):
-        self.llm = ChatOpenAI(
-            model=settings.OPENAI_MODEL,
+        # Initialize multiple LLMs for different agents
+        
+        # GPT-4 for theory agent
+        self.theory_llm = ChatOpenAI(
+            model=settings.THEORY_MODEL,
             temperature=settings.AGENT_TEMPERATURE,
             openai_api_key=settings.OPENAI_API_KEY
         )
+        
+        # Ollama for research agent (API-based)
+        self.research_llm = None
+        try:
+            # Configure Ollama with API endpoint
+            ollama_kwargs = {
+                "model": settings.RESEARCH_MODEL,
+                "temperature": 0.1,  # Lower temperature for research accuracy
+                "base_url": settings.OLLAMA_BASE_URL,
+            }
+            
+            # Add API key if provided (for hosted Ollama services)
+            if settings.OLLAMA_API_KEY:
+                ollama_kwargs["api_key"] = settings.OLLAMA_API_KEY
+            
+            self.research_llm = ChatOllama(**ollama_kwargs)
+            print(f"✅ Ollama API initialized for research agent (endpoint: {settings.OLLAMA_BASE_URL})")
+        except Exception as e:
+            print(f"⚠️ Ollama API initialization failed: {e}, using GPT-4 for research agent")
+            self.research_llm = self.theory_llm
+        
+        # Claude for implementation agent
+        self.implementation_llm = None
+        if settings.ANTHROPIC_API_KEY:
+            try:
+                self.implementation_llm = ChatAnthropic(
+                    model=settings.IMPLEMENTATION_MODEL,
+                    temperature=settings.AGENT_TEMPERATURE,
+                    anthropic_api_key=settings.ANTHROPIC_API_KEY
+                )
+                print("✅ Claude 3.5 Sonnet initialized for implementation agent")
+            except Exception as e:
+                print(f"⚠️ Claude initialization failed: {e}, using GPT-4 for implementation agent")
+                self.implementation_llm = self.theory_llm
+        else:
+            print("⚠️ ANTHROPIC_API_KEY not found, using GPT-4 for implementation agent")
+            self.implementation_llm = self.theory_llm
+        
         self.vector_store = None
         self.agents = {}
         self._setup_vector_store()
         self._setup_agents()
     
     def _setup_vector_store(self):
-        """Setup ChromaDB vector store for RAG"""
+        """Setup vector store (Pinecone) for RAG"""
         try:
-            embeddings = HuggingFaceEmbeddings(
-                model_name=settings.EMBEDDING_MODEL
-            )
+            # Setup Pinecone as the exclusive vector store with hosted embeddings
+            if settings.VECTOR_STORE_TYPE.lower() != "pinecone":
+                raise ValueError("Configuration error: This project is configured to use 'pinecone' exclusively.")
             
             # Load knowledge base if it exists
             knowledge_path = settings.KNOWLEDGE_BASE_FILE
+            documents = []
+            
             if os.path.exists(knowledge_path):
-                with open(knowledge_path, 'r') as f:
+                # Enforce UTF-8 encoding to prevent errors on Windows
+                with open(knowledge_path, 'r', encoding='utf-8') as f:
                     knowledge_data = json.load(f)
                 
                 # Convert to documents
-                documents = []
                 for item in knowledge_data:
                     doc = Document(
                         page_content=item.get('content', ''),
@@ -57,43 +101,194 @@ class LangChainMLAgents:
                         }
                     )
                     documents.append(doc)
-                
-                # Create vector store
-                self.vector_store = Chroma.from_documents(
-                    documents=documents,
-                    embedding=embeddings,
-                    persist_directory=settings.VECTOR_STORE_PATH
-                )
-                print(f"✅ Vector store loaded with {len(documents)} documents")
+                print(f"📚 Loaded {len(documents)} documents from knowledge base")
             else:
-                print("⚠️ No knowledge base found. Creating empty vector store.")
-                self.vector_store = Chroma(
-                    embedding_function=embeddings,
-                    persist_directory=settings.VECTOR_STORE_PATH
-                )
+                print("⚠️ No knowledge base found. Vector store will be empty initially.")
+            
+            self._setup_pinecone_store(documents)
+                
         except Exception as e:
             print(f"❌ Error setting up vector store: {e}")
+            print("⚠️ Continuing without vector store - agents will work but without RAG capabilities")
             self.vector_store = None
     
+    def _setup_pinecone_store(self, documents):
+        """Setup Pinecone vector store with hosted embeddings using LangChain"""
+        if not settings.PINECONE_API_KEY:
+            raise ValueError("PINECONE_API_KEY is required for Pinecone vector store. Please set it in your .env file.")
+        
+        try:
+            # Import Pinecone dependencies only when needed
+            from pinecone import Pinecone
+            from langchain_pinecone import PineconeVectorStore
+            
+            pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+            
+            # Check if index exists, create if not
+            index_name = settings.PINECONE_INDEX_NAME
+            existing_indexes = [index.name for index in pc.list_indexes()]
+            
+            if index_name not in existing_indexes:
+                print(f"🔄 Creating Pinecone index with hosted embeddings: {index_name}")
+                
+                # Create index with integrated inference using llama-text-embed-v2
+                pc.create_index_for_model(
+                    name=index_name,
+                    cloud="aws",
+                    region="us-east-1",
+                    embed={
+                        "model": "llama-text-embed-v2",
+                        "field_map": {
+                            "text": "text"  # Map the record field to be embedded
+                        }
+                    }
+                )
+                print(f"✅ Pinecone index '{index_name}' created with hosted llama-text-embed-v2")
+            else:
+                print(f"✅ Using existing Pinecone index: {index_name}")
+            
+            # Create a custom embedding class that integrates with Pinecone's hosted inference
+            class PineconeHostedEmbeddings:
+                """Custom embeddings class using Pinecone's hosted inference"""
+                def __init__(self, index_name):
+                    self.index_name = index_name
+                    self.pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+                    self.index = self.pc.Index(index_name)
+                
+                def embed_documents(self, texts):
+                    """
+                    For hosted embeddings, we don't actually embed here.
+                    We return dummy vectors for LangChain compatibility.
+                    The actual embedding happens when documents are upserted via LangChain.
+                    """
+                    return [[0.0] * 1024 for _ in texts]  # 1024 is llama-text-embed-v2 dimension
+                
+                def embed_query(self, text):
+                    """
+                    For hosted embeddings, we don't actually embed here.
+                    We return a dummy vector for LangChain compatibility.
+                    The actual embedding happens during search.
+                    """
+                    return [0.0] * 1024
+            
+            # Create the custom embeddings instance
+            embeddings = PineconeHostedEmbeddings(index_name)
+            
+            # Create LangChain vector store using hosted embeddings
+            if documents:
+                print(f"🔄 Setting up LangChain PineconeVectorStore with {len(documents)} documents...")
+                
+                # For hosted inference, we need to handle the upsert differently
+                # We'll use LangChain's from_documents but with special handling for hosted embeddings
+                
+                # First, let's manually upsert the documents with proper hosted embedding format
+                index = pc.Index(index_name)
+                
+                # Prepare and upsert documents with hosted embeddings (correct API format)
+                records = []
+                for i, doc in enumerate(documents):
+                    # Clean text for Pinecone
+                    def clean_text(text):
+                        """Clean text for Pinecone storage"""
+                        return text.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').strip()
+                    
+                    title = clean_text(str(doc.metadata.get('title', ''))[:80])
+                    source = clean_text(str(doc.metadata.get('source', ''))[:100])
+                    category = str(doc.metadata.get('category', 'general'))
+                    
+                    # Correct format: all fields at top level, not nested in metadata
+                    record = {
+                        "_id": f"doc_{i}",  # Use _id as per Pinecone docs
+                        "text": doc.page_content,  # This will be embedded by Pinecone
+                        "title": title,  # Top-level metadata fields
+                        "source": source,
+                        "category": category
+                    }
+                    records.append(record)
+                
+                # Upsert in batches using correct API format
+                batch_size = 96  # Max for text upserts with hosted embeddings
+                for i in range(0, len(records), batch_size):
+                    batch = records[i:i + batch_size]
+                    # Correct API: namespace first, then records list
+                    index.upsert_records("__default__", batch)
+                    print(f"✅ Uploaded batch {i//batch_size + 1}/{(len(records)-1)//batch_size + 1}")
+                
+                # Now create the LangChain vector store pointing to the same index
+                self.vector_store = PineconeVectorStore(
+                    index_name=index_name,
+                    embedding=embeddings,
+                    text_key="text"  # Field containing the text content
+                )
+                
+                print(f"✅ LangChain PineconeVectorStore created with {len(documents)} documents using hosted embeddings")
+            else:
+                # Create empty vector store
+                self.vector_store = PineconeVectorStore(
+                    index_name=index_name,
+                    embedding=embeddings,
+                    text_key="text"
+                )
+                print("✅ LangChain PineconeVectorStore created (empty) with hosted embeddings")
+            
+            # Store the raw index for advanced operations if needed
+            self.pinecone_index = pc.Index(index_name)
+            
+        except ImportError as e:
+            print(f"❌ Pinecone dependencies error: {e}")
+            print("💡 Please install pinecone dependencies: pip install pinecone langchain-pinecone")
+            raise e
+    
     def _create_rag_tool(self):
-        """Create RAG tool for knowledge retrieval"""
+        """Create RAG tool for knowledge retrieval using LangChain's PineconeVectorStore"""
         def search_knowledge(query: str) -> str:
             """Search the knowledge base for relevant information"""
             if not self.vector_store:
                 return "Knowledge base not available"
             
             try:
-                docs = self.vector_store.similarity_search(query, k=3)
-                if not docs:
-                    return "No relevant information found in knowledge base"
-                
-                results = []
-                for doc in docs:
-                    content = doc.page_content[:500] + "..." if len(doc.page_content) > 500 else doc.page_content
-                    title = doc.metadata.get('title', 'Unknown')
-                    results.append(f"Source: {title}\nContent: {content}")
-                
-                return "\n\n".join(results)
+                # For hosted embeddings, we need to use the raw Pinecone API for search
+                # because LangChain's similarity_search doesn't support hosted inference yet
+                if hasattr(self, 'pinecone_index') and self.pinecone_index:
+                    # Use Pinecone's hosted embedding for query
+                    query_payload = {
+                        "inputs": {
+                            "text": query
+                        },
+                        "top_k": 3
+                    }
+                    
+                    search_results = self.pinecone_index.search(query=query_payload, namespace="__default__")
+                    
+                    if not search_results.get('matches'):
+                        return "No relevant information found in knowledge base"
+                    
+                    results = []
+                    for match in search_results['matches']:
+                        # Get metadata from top-level fields (correct format)
+                        title = match.get('title', 'Unknown')
+                        source = match.get('source', '')
+                        # Get a preview of the content
+                        text = match.get('text', '')
+                        content = text[:500] + "..." if len(text) > 500 else text
+                        score = match.get('score', 0)
+                        results.append(f"Source: {title} (Score: {score:.3f})\nContent: {content}")
+                    
+                    return "\n\n".join(results)
+                else:
+                    # Fallback to LangChain's method (though it won't work well with hosted embeddings)
+                    docs = self.vector_store.similarity_search(query, k=3)
+                    if not docs:
+                        return "No relevant information found in knowledge base"
+                    
+                    results = []
+                    for doc in docs:
+                        content = doc.page_content[:500] + "..." if len(doc.page_content) > 500 else doc.page_content
+                        title = doc.metadata.get('title', 'Unknown')
+                        results.append(f"Source: {title}\nContent: {content}")
+                    
+                    return "\n\n".join(results)
+                    
             except Exception as e:
                 return f"Error searching knowledge base: {e}"
         
@@ -124,11 +319,21 @@ class LangChainMLAgents:
             MessagesPlaceholder(variable_name="agent_scratchpad")
         ])
         
-        research_agent = create_openai_functions_agent(
-            llm=self.llm,
-            tools=[rag_tool],
-            prompt=research_prompt
-        )
+        # Use appropriate agent creation method based on LLM type
+        if isinstance(self.research_llm, ChatOllama):
+            # For Ollama models, use generic tool calling agent
+            research_agent = create_tool_calling_agent(
+                llm=self.research_llm,
+                tools=[rag_tool],
+                prompt=research_prompt
+            )
+        else:
+            # For OpenAI models (fallback case)
+            research_agent = create_openai_functions_agent(
+                llm=self.research_llm,
+                tools=[rag_tool],
+                prompt=research_prompt
+            )
         
         self.agents['research'] = AgentExecutor(
             agent=research_agent,
@@ -137,7 +342,7 @@ class LangChainMLAgents:
             handle_parsing_errors=True
         )
         
-        # Theory Agent
+        # Theory Agent (always uses OpenAI)
         theory_prompt = ChatPromptTemplate.from_messages([
             ("system", """You are a Theory Agent specializing in explaining mathematical concepts in ML/DL.
             Your role is to:
@@ -153,7 +358,7 @@ class LangChainMLAgents:
         ])
         
         theory_agent = create_openai_functions_agent(
-            llm=self.llm,
+            llm=self.theory_llm,  # Use GPT-4 for theory/math tasks
             tools=[rag_tool],
             prompt=theory_prompt
         )
@@ -180,11 +385,21 @@ class LangChainMLAgents:
             MessagesPlaceholder(variable_name="agent_scratchpad")
         ])
         
-        implementation_agent = create_openai_functions_agent(
-            llm=self.llm,
-            tools=[rag_tool],
-            prompt=implementation_prompt
-        )
+        # Use appropriate agent creation method based on LLM type
+        if isinstance(self.implementation_llm, ChatAnthropic):
+            # For Claude models, use generic tool calling agent
+            implementation_agent = create_tool_calling_agent(
+                llm=self.implementation_llm,
+                tools=[rag_tool],
+                prompt=implementation_prompt
+            )
+        else:
+            # For OpenAI models (fallback case)
+            implementation_agent = create_openai_functions_agent(
+                llm=self.implementation_llm,
+                tools=[rag_tool],
+                prompt=implementation_prompt
+            )
         
         self.agents['implementation'] = AgentExecutor(
             agent=implementation_agent,
@@ -198,23 +413,57 @@ class LangChainMLAgents:
     def route_query(self, query: str) -> str:
         """Simple routing logic to determine best agent"""
         query_lower = query.lower()
-        
-        # Implementation keywords
-        implementation_keywords = ['code', 'implement', 'pytorch', 'tensorflow', 'example', 'how to', 'build']
+
+        # Implementation keywords - expanded for broader coverage
+        implementation_keywords = [
+            # Actions
+            'code', 'implement', 'implementation', 'write', 'create', 'generate', 'build',
+            'debug', 'fix', 'error', 'test', 'optimize', 'refactor', 'run', 'execute',
+            'script', 'function', 'class', 'module', 'library', 'package', 'api', 'framework',
+
+            # Libraries/Frameworks
+            'pytorch', 'tensorflow', 'keras', 'numpy', 'pandas', 'scikit', 'sklearn',
+            'fastapi', 'streamlit', 'docker',
+
+            # Concepts
+            'example', 'how to', 'tutorial', 'demo',
+            'python', 'jupyter', 'notebook', 'coding', 'programming'
+        ]
         if any(keyword in query_lower for keyword in implementation_keywords):
             return 'implementation'
-        
-        # Research keywords  
-        research_keywords = ['paper', 'research', 'study', 'literature', 'recent', 'state of art']
+
+        # Research keywords - expanded for broader coverage
+        research_keywords = [
+            # Actions
+            'find', 'search', 'summarize', 'compare', 'review', 'survey', 'cite',
+
+            # Nouns
+            'paper', 'papers', 'study', 'studies', 'literature', 'research', 'publication',
+            'journal', 'conference', 'arxiv', 'citation', 'background',
+
+            # Concepts
+            'recent', 'state of the art', 'sota', 'advances', 'developments', 'trends'
+        ]
         if any(keyword in query_lower for keyword in research_keywords):
             return 'research'
-        
-        # Theory keywords (default)
-        theory_keywords = ['explain', 'what is', 'how does', 'theory', 'mathematical', 'algorithm']
+
+        # Theory keywords (default) - expanded for broader coverage
+        theory_keywords = [
+            # Actions
+            'explain', 'understand', 'define', 'derive', 'prove',
+
+            # Nouns
+            'theory', 'mathematical', 'math', 'concept', 'conceptual', 'idea', 'logic',
+            'principle', 'foundation', 'formula', 'equation', 'derivation', 'proof',
+            'definition', 'intuition', 'algorithm', 'architecture',
+
+            # Questions
+            'what is', 'how does', 'why is'
+        ]
         if any(keyword in query_lower for keyword in theory_keywords):
             return 'theory'
-        
-        # Default to theory agent
+
+        # Default to theory agent if no keywords match
         return 'theory'
     
     def process_query(self, query: str, chat_history: List = None) -> Dict[str, Any]:
@@ -240,10 +489,24 @@ class LangChainMLAgents:
                 'chat_history': chat_history
             })
             
+            # Standardize the response format from different agent types
+            raw_response = result.get('output', '')
+            
+            # Tool-calling agents (Claude/Ollama) may return a list of dicts
+            if isinstance(raw_response, list) and raw_response and isinstance(raw_response[0], dict):
+                # Handle formats like: [{'text': '...', 'type': 'text'}]
+                final_response = " ".join([chunk.get('text', '') for chunk in raw_response if 'text' in chunk])
+            elif isinstance(raw_response, str):
+                # Standard string output (from OpenAI function-calling agent)
+                final_response = raw_response
+            else:
+                # Fallback for any other unexpected formats
+                final_response = str(raw_response)
+
             return {
                 'query': query,
                 'agent_used': agent_name,
-                'response': result['output'],
+                'response': final_response.strip(),
                 'success': True
             }
             
@@ -262,17 +525,40 @@ class LangChainMLAgents:
     def health_check(self) -> Dict[str, bool]:
         """Check system health"""
         status = {
-            'llm_connection': False,
             'vector_store': self.vector_store is not None,
+            'vector_store_type': settings.VECTOR_STORE_TYPE,
             'agents_loaded': len(self.agents) > 0
         }
         
-        # Test LLM connection
+        # Test GPT-4 connection (theory agent)
         try:
-            response = self.llm.invoke([HumanMessage(content="test")])
-            status['llm_connection'] = bool(response.content)
+            response = self.theory_llm.invoke([HumanMessage(content="test")])
+            status['gpt4_connection'] = bool(response.content)
         except:
-            status['llm_connection'] = False
+            status['gpt4_connection'] = False
+        
+        # Test Ollama connection (research agent)
+        if self.research_llm and self.research_llm != self.theory_llm:
+            try:
+                response = self.research_llm.invoke([HumanMessage(content="test")])
+                status['ollama_connection'] = bool(response.content)
+            except:
+                status['ollama_connection'] = False
+        else:
+            status['ollama_connection'] = False  # Not properly configured
+            
+        # Test Claude connection (implementation agent)
+        if self.implementation_llm and self.implementation_llm != self.theory_llm:
+            try:
+                response = self.implementation_llm.invoke([HumanMessage(content="test")])
+                status['claude_connection'] = bool(response.content)
+            except:
+                status['claude_connection'] = False
+        else:
+            status['claude_connection'] = False  # Not properly configured
+            
+        # Overall LLM health
+        status['all_llms_configured'] = status['gpt4_connection'] and status['ollama_connection'] and status['claude_connection']
         
         # Test each agent
         for agent_name in self.agents:

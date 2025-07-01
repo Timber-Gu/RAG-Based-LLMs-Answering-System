@@ -7,7 +7,7 @@ import sys
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+load_dotenv(override=True)
 
 # Add src to path
 sys.path.append('src')

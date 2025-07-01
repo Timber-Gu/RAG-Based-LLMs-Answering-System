@@ -6,22 +6,36 @@ from typing import Optional
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 class Settings(BaseModel):
     """Application settings for LangChain multi-agent system"""
     
     # API Keys
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
+    ANTHROPIC_API_KEY: Optional[str] = os.getenv("ANTHROPIC_API_KEY")
+    PINECONE_API_KEY: Optional[str] = os.getenv("PINECONE_API_KEY")
     
-    # LangChain Agent Settings
-    OPENAI_MODEL: str = "gpt-3.5-turbo"
+    # Multi-Model Agent Settings
+    RESEARCH_MODEL: str = "llama3.1"                  # Ollama model for research agent
+    THEORY_MODEL: str = "gpt-4"                       # GPT-4 for theory agent  
+    IMPLEMENTATION_MODEL: str = "claude-3-5-sonnet-20241022"  # Claude for implementation agent
     AGENT_TEMPERATURE: float = 0.7
     AGENT_MAX_TOKENS: int = 1000
     
-    # Vector Store Settings (ChromaDB - simpler than Pinecone)
-    VECTOR_STORE_PATH: str = "data/vector_store"
-    EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
+    # Ollama API Settings
+    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")  # Ollama API endpoint
+    OLLAMA_API_KEY: Optional[str] = os.getenv("OLLAMA_API_KEY")  # Optional for hosted Ollama services
+    
+    # Vector Store Settings
+    VECTOR_STORE_TYPE: str = os.getenv("VECTOR_STORE_TYPE", "pinecone") 
+    
+    # Pinecone Settings (Cloud)
+    PINECONE_INDEX_NAME: str = os.getenv("PINECONE_INDEX_NAME")
+    PINECONE_ENVIRONMENT: str = os.getenv("PINECONE_ENVIRONMENT")
+    
+    # Common Settings
+    EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL")
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 200
     
