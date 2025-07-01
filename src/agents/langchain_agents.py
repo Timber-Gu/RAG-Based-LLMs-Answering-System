@@ -298,11 +298,65 @@ class LangChainMLAgents:
             func=search_knowledge
         )
     
+    def _create_cot_tool(self):
+        """Create Chain of Thoughts reasoning tool for structured thinking"""
+        def chain_of_thoughts_reasoning(problem_statement: str) -> str:
+            """
+            Apply Chain of Thoughts reasoning to break down complex problems
+            This tool helps structure thinking for mathematical and theoretical problems
+            """
+            try:
+                # Template for CoT reasoning
+                cot_template = f"""
+                Chain of Thoughts Analysis for: {problem_statement}
+                
+                🎯 **Problem Decomposition:**
+                - Main question: {problem_statement}
+                - Sub-problems to address: [Identify key components]
+                - Required knowledge areas: [List relevant ML/DL concepts]
+                
+                🔍 **Reasoning Strategy:**
+                - Approach: [Top-down/Bottom-up/Analogical reasoning]
+                - Key assumptions: [List any assumptions made]
+                - Potential challenges: [Identify complex aspects]
+                
+                📊 **Conceptual Hierarchy:**
+                - Foundation concepts: [Basic building blocks]
+                - Intermediate concepts: [Mid-level understanding]
+                - Advanced concepts: [Complex relationships]
+                
+                🧮 **Mathematical Structure:**
+                - Variables and notation: [Define symbols]
+                - Key equations: [Relevant formulas]
+                - Derivation steps: [Logical progression]
+                
+                💡 **Insight Generation:**
+                - Key insights: [Important realizations]
+                - Common misconceptions: [What to avoid]
+                - Practical implications: [Real-world applications]
+                
+                This structured analysis provides a framework for systematic reasoning about: {problem_statement}
+                """
+                
+                return cot_template.strip()
+                
+            except Exception as e:
+                return f"Error in Chain of Thoughts reasoning: {e}"
+        
+        return Tool(
+            name="chain_of_thoughts_reasoning",
+            description="Apply structured Chain of Thoughts reasoning to break down complex mathematical and theoretical problems into manageable components",
+            func=chain_of_thoughts_reasoning
+        )
+    
     def _setup_agents(self):
         """Setup specialized LangChain agents"""
         
         # Create RAG tool
         rag_tool = self._create_rag_tool()
+        
+        # Create Chain of Thoughts tool for Theory Agent
+        cot_tool = self._create_cot_tool()
         
         # Research Agent
         research_prompt = ChatPromptTemplate.from_messages([
@@ -342,16 +396,65 @@ class LangChainMLAgents:
             handle_parsing_errors=True
         )
         
-        # Theory Agent (always uses OpenAI)
+        # Theory Agent with Chain of Thoughts
         theory_prompt = ChatPromptTemplate.from_messages([
-            ("system", """You are a Theory Agent specializing in explaining mathematical concepts in ML/DL.
-            Your role is to:
-            - Explain mathematical foundations and theory
-            - Derive equations and formulas
-            - Clarify conceptual understanding
-            - Break down complex algorithms step-by-step
+            ("system", """You are a Theory Agent specializing in explaining mathematical concepts in ML/DL using Chain of Thoughts reasoning.
+
+            Your role is to provide clear, step-by-step explanations using the following structured approach:
+
+            **Chain of Thoughts Framework:**
+            1. **Problem Understanding**: First, clearly restate what is being asked
+            2. **Knowledge Retrieval**: Search the knowledge base for relevant theoretical content
+            3. **Conceptual Foundation**: Establish the fundamental concepts needed
+            4. **Step-by-Step Analysis**: Break down the problem into logical steps
+            5. **Mathematical Derivation**: Show detailed mathematical work when applicable
+            6. **Intuitive Explanation**: Provide intuitive understanding of the concepts
+            7. **Connections**: Link to related concepts and broader context
+            8. **Summary**: Conclude with key takeaways
+
+            **Response Format:**
+            Always structure your responses using this format:
+
+            🤔 **Thinking Process:**
+            [Brief overview of your reasoning approach]
+
+            📚 **Knowledge Base Search:**
+            [Use the search_knowledge tool to find relevant information]
+
+            🧠 **Step-by-Step Analysis:**
             
-            Use the knowledge base to find relevant theoretical content."""),
+            **Step 1: Problem Understanding**
+            [Clearly restate the question and identify what needs to be explained]
+            
+            **Step 2: Fundamental Concepts**
+            [Define key terms and establish foundational knowledge]
+            
+            **Step 3: Mathematical Framework** (if applicable)
+            [Present relevant equations, formulas, or mathematical structures]
+            
+            **Step 4: Detailed Explanation**
+            [Provide thorough explanation with reasoning]
+            
+            **Step 5: Intuitive Understanding**
+            [Explain the "why" and "how" in intuitive terms]
+            
+            **Step 6: Practical Implications**
+            [Discuss how this applies in practice]
+
+            🔗 **Connections & Context:**
+            [Link to related concepts and broader ML/DL context]
+
+            📝 **Key Takeaways:**
+            [Summarize the most important points]
+
+            **Guidelines:**
+            - Always search the knowledge base first before providing explanations
+            - Show your reasoning process explicitly
+            - Use mathematical notation when helpful (LaTeX format)
+            - Provide both formal and intuitive explanations
+            - Connect abstract concepts to concrete examples
+            - Acknowledge limitations or assumptions when relevant
+            - Build explanations from simple to complex concepts"""),
             MessagesPlaceholder(variable_name="chat_history"),
             ("user", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad")
@@ -359,13 +462,13 @@ class LangChainMLAgents:
         
         theory_agent = create_openai_functions_agent(
             llm=self.theory_llm,  # Use GPT-4 for theory/math tasks
-            tools=[rag_tool],
+            tools=[rag_tool, cot_tool],
             prompt=theory_prompt
         )
         
         self.agents['theory'] = AgentExecutor(
             agent=theory_agent,
-            tools=[rag_tool],
+            tools=[rag_tool, cot_tool],
             verbose=True,
             handle_parsing_errors=True
         )

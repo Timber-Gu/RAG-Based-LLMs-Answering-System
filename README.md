@@ -187,10 +187,16 @@ Knowledge Base (ML/DL Papers & Content)
 - **Triggers**: `paper`, `research`, `study`, `literature`, `recent`, `survey`
 - **Example**: *"Find recent papers about transformer architectures"*
 
-### 📐 Theory Agent (GPT-4)
-- **Purpose**: Mathematical concepts and theoretical explanations
+### 📐 Theory Agent (GPT-4) with Chain of Thoughts
+- **Purpose**: Mathematical concepts and theoretical explanations using structured reasoning
+- **Features**: 
+  - Chain of Thoughts (CoT) reasoning for complex problems
+  - Step-by-step mathematical derivations
+  - Structured problem decomposition
+  - Intuitive explanations alongside formal proofs
 - **Triggers**: `explain`, `theory`, `mathematical`, `algorithm`, `concept`
 - **Example**: *"Explain the mathematical foundations of neural networks"*
+- **CoT Structure**: Problem Understanding → Knowledge Retrieval → Step-by-Step Analysis → Intuitive Explanation → Key Takeaways
 
 ### 💻 Implementation Agent (Claude 3.5 Sonnet)
 - **Purpose**: Code generation and practical guidance
@@ -248,6 +254,7 @@ RAG-Based-LLMs-Answering-System/
 - **RAG Tools**: LangChain-compatible knowledge retrieval tools
 - **Vector Store**: LangChain `PineconeVectorStore` with hosted embeddings
 - **Prompt Management**: Structured prompt templates for each agent
+- **Chain of Thoughts**: Advanced reasoning framework for Theory Agent with structured problem-solving
 
 ### Pinecone Hosted Embeddings
 - **Automatic Embedding**: No local embedding models required
