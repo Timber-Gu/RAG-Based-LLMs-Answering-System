@@ -29,10 +29,10 @@ A sophisticated **RAG-based multi-agent system** for Machine Learning and Deep L
 ## 🛠️ Quick Setup
 
 ### Prerequisites
-- **OpenAI API Key** (for GPT-4 Theory Agent)
-- **Anthropic API Key** (for Claude Implementation Agent)  
-- **Pinecone API Key** (for hosted embeddings and vector storage)
-- **Ollama** (optional, for Research Agent)
+- **OpenAI API Key** (for GPT-4 Theory Agent) - Get it from [OpenAI Platform](https://platform.openai.com/account/api-keys)
+- **Anthropic API Key** (for Claude Implementation Agent) - Get it from [Anthropic Console](https://console.anthropic.com/)
+- **Pinecone API Key** and **Environment** - Get them from [Pinecone Console](https://app.pinecone.io/)
+- **Ollama** (optional, for Research Agent) - [Installation Guide](https://ollama.ai/download)
 
 ### Installation
 
@@ -47,16 +47,90 @@ A sophisticated **RAG-based multi-agent system** for Machine Learning and Deep L
    pip install -r requirements.txt
    ```
 
-3. **Configure Environment**
+3. **Set Up Environment Variables**
+   
+   Create a new file named `.env` in the project root with the following structure:
    ```bash
-   cp .env.example .env
-   # Edit .env with your actual API keys
+   # Required API Keys
+   OPENAI_API_KEY=your_openai_api_key_here
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   
+   # Pinecone Configuration (Required)
+   VECTOR_STORE_TYPE=pinecone
+   PINECONE_INDEX_NAME=myproject          # Create this index in Pinecone first
+   PINECONE_ENVIRONMENT=your_environment  # e.g., us-east-1
+   PINECONE_API_KEY=your_pinecone_api_key
+   EMBEDDING_MODEL=llama-text-embed-v2
+   
+   # Model Settings (Optional - these are default values)
+   AGENT_TEMPERATURE=0.7
+   AGENT_MAX_TOKENS=1000
+   
+   # Vector Store Settings (Optional - these are default values)
+   CHUNK_SIZE=1000
+   CHUNK_OVERLAP=200
+   
+   # Data Paths (Optional - these are default values)
+   DATA_DIR=data
+   PAPERS_DIR=data/papers
+   KNOWLEDGE_BASE_FILE=data/knowledge_base.json
+   
+   # API Server Settings (Optional - for web interface)
+   API_HOST=localhost
+   API_PORT=8000
+   
+   # Ollama Settings (Optional - for Research Agent)
+   OLLAMA_BASE_URL=http://127.0.0.1:11434
+   RESEARCH_MODEL=llama3.1
    ```
 
-4. **Run the System**
+4. **Pinecone Setup**
+   - Create a free account at [Pinecone](https://app.pinecone.io/)
+   - Create a new index with the following settings:
+     - Dimensions: 1024 (required for llama-text-embed-v2)
+     - Metric: cosine
+     - Pod Type: starter (free tier)
+   - Copy your API key and environment from the Pinecone console
+   - Update your `.env` file with these values
+
+5. **Run the System**
    ```bash
    python main.py
    ```
+
+### Environment Variables Explained
+
+#### Required Variables
+- `OPENAI_API_KEY`: Your OpenAI API key for GPT-4 access
+- `ANTHROPIC_API_KEY`: Your Anthropic API key for Claude access
+- `PINECONE_API_KEY`: Your Pinecone API key for vector storage
+- `PINECONE_ENVIRONMENT`: Your Pinecone environment (e.g., us-east-1)
+- `PINECONE_INDEX_NAME`: Name of your Pinecone index
+
+#### Optional Variables
+- `AGENT_TEMPERATURE`: Controls response creativity (0.0-1.0, default: 0.7)
+- `AGENT_MAX_TOKENS`: Maximum response length (default: 1000)
+- `CHUNK_SIZE`: Size of text chunks for vector storage (default: 1000)
+- `CHUNK_OVERLAP`: Overlap between chunks (default: 200)
+- `OLLAMA_BASE_URL`: URL for local Ollama instance (default: http://127.0.0.1:11434)
+- `RESEARCH_MODEL`: Ollama model to use (default: llama3.1)
+
+### Troubleshooting Environment Setup
+
+1. **API Key Issues**
+   - Ensure all API keys are correctly copied without extra spaces
+   - Verify API keys are active and have sufficient credits
+   - Check for any special characters that might need escaping
+
+2. **Pinecone Issues**
+   - Verify your index is created with correct dimensions (1024)
+   - Ensure index name matches exactly what's in your `.env`
+   - Check if you're using the correct environment
+
+3. **Ollama Issues**
+   - Verify Ollama is running locally (`ollama run llama3.1`)
+   - Check if the model is downloaded (`ollama list`)
+   - Ensure the correct base URL is set
 
 ## ⚙️ Configuration
 
