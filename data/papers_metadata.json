@@ -1,185 +1,402 @@
 [
   {
-    "title": "Steering Conceptual Bias via Transformer Latent-Subspace Activation",
+    "title": "Beneath the Surface: >85% of z>5.9 QSOs in Massive Host Galaxies are UV-Faint",
     "authors": [
-      "Vansh Sharma",
-      "Venkat Raman"
+      "R. J. Bouwens",
+      "E. Banados",
+      "R. Decarli",
+      "J. Hennawi",
+      "D. Yang",
+      "H. Algera",
+      "M. Aravena",
+      "E. Farina",
+      "A. Gloudemans",
+      "J. Hodge",
+      "H. Inami",
+      "J. Matthee",
+      "R. Meyer",
+      "R. P. Naidu",
+      "P. Oesch",
+      "H. J. A. Rottgering",
+      "S. Schouws",
+      "R. Smit",
+      "M. Stefanon",
+      "P. van der Werf",
+      "B. Venemans",
+      "F. Walter",
+      "Y. Fudamoto"
     ],
-    "abstract": "This work examines whether activating latent subspaces in language models\n(LLMs) can steer scientific code generation toward a specific programming\nlanguage. Five causal LLMs were first evaluated on scientific coding prompts to\nquantify their baseline bias among four programming languages. A static\nneuron-attribution method, perturbing the highest activated MLP weight for a\nC++ or CPP token, proved brittle and exhibited limited generalization across\nprompt styles and model scales. To address these limitations, a\ngradient-refined adaptive activation steering framework (G-ACT) was developed:\nper-prompt activation differences are clustered into a small set of steering\ndirections, and lightweight per-layer probes are trained and refined online to\nselect the appropriate steering vector. In LLaMA-3.2 3B, this approach reliably\nbiases generation towards the CPP language by increasing the average probe\nclassification accuracy by 15% and the early layers (0-6) improving the probe\nclassification accuracy by 61.5% compared to the standard ACT framework. For\nLLaMA-3.3 70B, where attention-head signals become more diffuse, targeted\ninjections at key layers still improve language selection. Although per-layer\nprobing introduces a modest inference overhead, it remains practical by\nsteering only a subset of layers and enables reproducible model behavior. These\nresults demonstrate a scalable, interpretable and efficient mechanism for\nconcept-level control for practical agentic systems.",
-    "url": "http://arxiv.org/abs/2506.18887v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18887v1",
-    "published": "2025-06-23T17:56:34+00:00",
+    "abstract": "We use [CII] observations of a large QSO sample to segregate sources by host\ngalaxy mass, aiming to identify those in the most massive hosts. [CII]\nluminosity, a known tracer of molecular gas, is taken as a proxy for host mass\nand used to rank 190 QSOs at z>5.9, spanning a 6-mag UV luminosity range\n(-22<Muv<-28). Particularly valuable are ALMA data from a cycle-10 CISTERN\nprogram, providing [CII] coverage for 46 UV-faint (M_{UV,AB}>-24.5) and 25\nespecially UV-faint (Muv>-23.5) QSOs, improving statistics by 5x and 6x,\nrespectively. Taking massive host galaxies to be those where L[CII]>1.8x10^9\nLsol (median L[CII] of UV-bright QSOs), we identify 61 QSOs, including 13 which\nare UV-faint and 7 especially UV-faint. Using these selections and recent QSO\nluminosity functions (LFs), we present the first characterization of UV\nluminosity distribution for QSOs in massive host galaxies and quantify [CII]\nLFs for both UV-bright and UV-faint QSOs. While ~3% of massive-host QSOs are\nUV-bright (Muv<-26), >~85% are UV-faint (Muv>-24.5). This wide dispersion in UV\nluminosities reflects variations in dust obscuration, accretion efficiency, and\nblack hole mass. Though spectroscopy is needed for definitive conclusions,\nblack hole mass appears to be the dominant factor driving variations in the UV\nluminosity, based on 34 [CII]-luminous (L[CII]>1.8x10^9 Lsol) QSOs distributed\nacross a ~3-mag baseline in UV luminosity and with measured MBH. At Muv~-23,\nthe median extrapolated log10 (MBH/Msol) is 8.1+/-0.4, consistent with the\nlocal relation. SMBHs in UV-bright QSOs thus appear to be ~15(-9)(+25)x more\nmassive than typical for massive host galaxies at z~6.",
+    "url": "http://arxiv.org/abs/2506.24128v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24128v1",
+    "published": "2025-06-30T17:59:58+00:00",
+    "categories": [
+      "astro-ph.GA"
+    ],
+    "arxiv_id": "2506.24128v1"
+  },
+  {
+    "title": "Controlling the false discovery rate under a non-parametric graphical dependence model",
+    "authors": [
+      "Drew T. Nguyen",
+      "William Fithian"
+    ],
+    "abstract": "We propose sufficient conditions and computationally efficient procedures for\nfalse discovery rate control in multiple testing when the $p$-values are\nrelated by a known \\emph{dependency graph} -- meaning that we assume\nindependence of $p$-values that are not within each other's neighborhoods, but\notherwise leave the dependence unspecified. Our methods' rejection sets\ncoincide with that of the Benjamini--Hochberg (BH) procedure whenever there are\nno edges between BH rejections, and we find in simulations and a genomics data\nexample that their power approaches that of the BH procedure when there are few\nsuch edges, as is commonly the case. Because our methods ignore all hypotheses\nnot in the BH rejection set, they are computationally efficient whenever that\nset is small. Our fastest method, the IndBH procedure, typically finishes\nwithin seconds even in simulations with up to one million hypotheses.",
+    "url": "http://arxiv.org/abs/2506.24126v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24126v1",
+    "published": "2025-06-30T17:59:35+00:00",
+    "categories": [
+      "stat.ME",
+      "math.ST",
+      "stat.TH"
+    ],
+    "arxiv_id": "2506.24126v1"
+  },
+  {
+    "title": "FADRM: Fast and Accurate Data Residual Matching for Dataset Distillation",
+    "authors": [
+      "Jiacheng Cui",
+      "Xinyue Bi",
+      "Yaxin Luo",
+      "Xiaohan Zhao",
+      "Jiacheng Liu",
+      "Zhiqiang Shen"
+    ],
+    "abstract": "Residual connection has been extensively studied and widely applied at the\nmodel architecture level. However, its potential in the more challenging\ndata-centric approaches remains unexplored. In this work, we introduce the\nconcept of Data Residual Matching for the first time, leveraging data-level\nskip connections to facilitate data generation and mitigate data information\nvanishing. This approach maintains a balance between newly acquired knowledge\nthrough pixel space optimization and existing core local information\nidentification within raw data modalities, specifically for the dataset\ndistillation task. Furthermore, by incorporating optimization-level\nrefinements, our method significantly improves computational efficiency,\nachieving superior performance while reducing training time and peak GPU memory\nusage by 50%. Consequently, the proposed method Fast and Accurate Data Residual\nMatching for Dataset Distillation (FADRM) establishes a new state-of-the-art,\ndemonstrating substantial improvements over existing methods across multiple\ndataset benchmarks in both efficiency and effectiveness. For instance, with\nResNet-18 as the student model and a 0.8% compression ratio on ImageNet-1K, the\nmethod achieves 47.7% test accuracy in single-model dataset distillation and\n50.0% in multi-model dataset distillation, surpassing RDED by +5.7% and\noutperforming state-of-the-art multi-model approaches, EDC and CV-DD, by +1.4%\nand +4.0%. Code is available at: https://github.com/Jiacheng8/FADRM.",
+    "url": "http://arxiv.org/abs/2506.24125v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24125v1",
+    "published": "2025-06-30T17:59:34+00:00",
+    "categories": [
+      "cs.CV",
+      "cs.AI"
+    ],
+    "arxiv_id": "2506.24125v1"
+  },
+  {
+    "title": "Teaching Time Series to See and Speak: Forecasting with Aligned Visual and Textual Perspectives",
+    "authors": [
+      "Dong Sixun",
+      "Fan Wei",
+      "Teresa Wu",
+      "Fu Yanjie"
+    ],
+    "abstract": "Time series forecasting traditionally relies on unimodal numerical inputs,\nwhich often struggle to capture high-level semantic patterns due to their dense\nand unstructured nature. While recent approaches have explored representing\ntime series as text using large language models (LLMs), these methods remain\nlimited by the discrete nature of token sequences and lack the perceptual\nintuition humans typically apply, such as interpreting visual patterns. In this\npaper, we propose a multimodal contrastive learning framework that transforms\nraw time series into structured visual and textual perspectives. Rather than\nusing natural language or real-world images, we construct both modalities\ndirectly from numerical sequences. We then align these views in a shared\nsemantic space via contrastive learning, enabling the model to capture richer\nand more complementary representations. Furthermore, we introduce a variate\nselection module that leverages the aligned representations to identify the\nmost informative variables for multivariate forecasting. Extensive experiments\non fifteen short-term and six long-term forecasting benchmarks demonstrate that\nour approach consistently outperforms strong unimodal and cross-modal\nbaselines, highlighting the effectiveness of multimodal alignment in enhancing\ntime series forecasting. Code is available at:\nhttps://github.com/Ironieser/TimesCLIP.",
+    "url": "http://arxiv.org/abs/2506.24124v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24124v1",
+    "published": "2025-06-30T17:59:14+00:00",
+    "categories": [
+      "cs.LG",
+      "cs.CV"
+    ],
+    "arxiv_id": "2506.24124v1"
+  },
+  {
+    "title": "Calligrapher: Freestyle Text Image Customization",
+    "authors": [
+      "Yue Ma",
+      "Qingyan Bai",
+      "Hao Ouyang",
+      "Ka Leong Cheng",
+      "Qiuyu Wang",
+      "Hongyu Liu",
+      "Zichen Liu",
+      "Haofan Wang",
+      "Jingye Chen",
+      "Yujun Shen",
+      "Qifeng Chen"
+    ],
+    "abstract": "We introduce Calligrapher, a novel diffusion-based framework that\ninnovatively integrates advanced text customization with artistic typography\nfor digital calligraphy and design applications. Addressing the challenges of\nprecise style control and data dependency in typographic customization, our\nframework incorporates three key technical contributions. First, we develop a\nself-distillation mechanism that leverages the pre-trained text-to-image\ngenerative model itself alongside the large language model to automatically\nconstruct a style-centric typography benchmark. Second, we introduce a\nlocalized style injection framework via a trainable style encoder, which\ncomprises both Qformer and linear layers, to extract robust style features from\nreference images. An in-context generation mechanism is also employed to\ndirectly embed reference images into the denoising process, further enhancing\nthe refined alignment of target styles. Extensive quantitative and qualitative\nevaluations across diverse fonts and design contexts confirm Calligrapher's\naccurate reproduction of intricate stylistic details and precise glyph\npositioning. By automating high-quality, visually consistent typography,\nCalligrapher surpasses traditional models, empowering creative practitioners in\ndigital art, branding, and contextual typographic design.",
+    "url": "http://arxiv.org/abs/2506.24123v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24123v1",
+    "published": "2025-06-30T17:59:06+00:00",
+    "categories": [
+      "cs.CV"
+    ],
+    "arxiv_id": "2506.24123v1"
+  },
+  {
+    "title": "TextMesh4D: High-Quality Text-to-4D Mesh Generation",
+    "authors": [
+      "Sisi Dai",
+      "Xinxin Su",
+      "Boyan Wan",
+      "Ruizhen Hu",
+      "Kai Xu"
+    ],
+    "abstract": "Recent advancements in diffusion generative models significantly advanced\nimage, video, and 3D content creation from user-provided text prompts. However,\nthe challenging problem of dynamic 3D content generation (text-to-4D) with\ndiffusion guidance remains largely unexplored. In this paper, we introduce\nTextMesh4D, a novel framework for high-quality text-to-4D generation. Our\napproach leverages per-face Jacobians as a differentiable mesh representation\nand decomposes 4D generation into two stages: static object creation and\ndynamic motion synthesis. We further propose a flexibility-rigidity\nregularization term to stabilize Jacobian optimization under video diffusion\npriors, ensuring robust geometric performance. Experiments demonstrate that\nTextMesh4D achieves state-of-the-art results in terms of temporal consistency,\nstructural fidelity, and visual realism. Moreover, TextMesh4D operates with a\nlow GPU memory overhead-requiring only a single 24GB GPU-offering a\ncost-effective yet high-quality solution for text-driven 4D mesh generation.\nThe code will be released to facilitate future research in text-to-4D\ngeneration.",
+    "url": "http://arxiv.org/abs/2506.24121v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24121v1",
+    "published": "2025-06-30T17:58:34+00:00",
+    "categories": [
+      "cs.CV"
+    ],
+    "arxiv_id": "2506.24121v1"
+  },
+  {
+    "title": "Data Uniformity Improves Training Efficiency and More, with a Convergence Framework Beyond the NTK Regime",
+    "authors": [
+      "Yuqing Wang",
+      "Shangding Gu"
+    ],
+    "abstract": "Data selection plays a crucial role in data-driven decision-making, including\nin large language models (LLMs), and is typically task-dependent. Properties\nsuch as data quality and diversity have been extensively studied and are known\nto enhance model performance. However, it remains unclear whether there exist\nother quantitative and general principles of data selection that can\nconsistently improve performance, especially for complex tasks with limited\nprior knowledge. In this paper, we demonstrate that selecting more uniformly\ndistributed data can improve training efficiency while enhancing performance.\nSpecifically, we establish that more uniform (less biased) distribution leads\nto a larger minimum pairwise distance between data points, denoted by\n$h_{\\min}$, and prove that a smaller $h_{\\min}$ can slow down the training\ndynamics of gradient descent (GD). Moreover, we theoretically show that the\napproximation error of neural networks decreases as $h_{\\min}$ increases. Our\nanalysis introduces a convergence framework for GD beyond the Neural Tangent\nKernel (NTK) regime, applicable to a broad class of architectures, including\ntransformers, without requiring Lipschitz smoothness. This framework further\nprovides theoretical justification for the use of residual connections and\nfunction compositions in deep neural architectures. In the end, we conduct\ncomprehensive experiments for supervised fine-tuning across various settings,\nincluding different optimization strategies, model sizes, and training\ndatasets. The results consistently demonstrate that selecting data by\nmaximizing pairwise distance significantly accelerates training and achieves\ncomparable or better performance in LLMs across diverse datasets. Code and\nDatasets are available at the link:\nhttps://github.com/SafeRL-Lab/data-uniformity.",
+    "url": "http://arxiv.org/abs/2506.24120v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24120v1",
+    "published": "2025-06-30T17:58:30+00:00",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "math.OC",
+      "stat.ML"
+    ],
+    "arxiv_id": "2506.24120v1"
+  },
+  {
+    "title": "SPIRAL: Self-Play on Zero-Sum Games Incentivizes Reasoning via Multi-Agent Multi-Turn Reinforcement Learning",
+    "authors": [
+      "Bo Liu",
+      "Leon Guertler",
+      "Simon Yu",
+      "Zichen Liu",
+      "Penghui Qi",
+      "Daniel Balcells",
+      "Mickel Liu",
+      "Cheston Tan",
+      "Weiyan Shi",
+      "Min Lin",
+      "Wee Sun Lee",
+      "Natasha Jaques"
+    ],
+    "abstract": "Recent advances in reinforcement learning have shown that language models can\ndevelop sophisticated reasoning through training on tasks with verifiable\nrewards, but these approaches depend on human-curated problem-answer pairs and\ndomain-specific reward engineering. We introduce SPIRAL, a self-play framework\nwhere models learn by playing multi-turn, zero-sum games against continuously\nimproving versions of themselves, eliminating the need for human supervision.\nThrough self-play, SPIRAL generates an infinite curriculum of progressively\nchallenging problems as models must constantly adapt to stronger opponents. To\nenable this self-play training at scale, We implement a fully online,\nmulti-turn, multi-agent reinforcement learning system for LLMs and propose\nrole-conditioned advantage estimation (RAE) to stabilize multi-agent training.\nUsing SPIRAL, self-play on zero-sum games produces reasoning capabilities that\ntransfer broadly. Training Qwen3-4B-Base on Kuhn Poker alone achieves 8.6%\nimprovement on math and 8.4% on general reasoning, outperforming SFT on 25,000\nexpert game trajectories. Analysis reveals that this transfer occurs through\nthree cognitive patterns: systematic decomposition, expected value calculation,\nand case-by-case analysis. Multi-game training (TicTacToe, Kuhn Poker, Simple\nNegotiation) further enhances performance as each game develops distinct\nreasoning strengths. Applying SPIRAL to a strong reasoning model\n(DeepSeek-R1-Distill-Qwen-7B) can still lead to 2.0% average improvement. These\nresults demonstrate that zero-sum games naturally develop transferable\nreasoning capabilities, highlighting a promising direction for autonomous\nreasoning development.",
+    "url": "http://arxiv.org/abs/2506.24119v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24119v1",
+    "published": "2025-06-30T17:58:13+00:00",
     "categories": [
       "cs.AI",
+      "cs.CL",
+      "cs.LG"
+    ],
+    "arxiv_id": "2506.24119v1"
+  },
+  {
+    "title": "Computational Detection of Intertextual Parallels in Biblical Hebrew: A Benchmark Study Using Transformer-Based Language Models",
+    "authors": [
+      "David M. Smiley"
+    ],
+    "abstract": "Identifying parallel passages in biblical Hebrew is foundational in biblical\nscholarship for uncovering intertextual relationships. Traditional methods rely\non manual comparison, which is labor-intensive and prone to human error. This\nstudy evaluates the potential of pre-trained transformer-based language models,\nincluding E5, AlephBERT, MPNet, and LaBSE, for detecting textual parallels in\nthe Hebrew Bible. Focusing on known parallels between the books of Samuel/Kings\nand Chronicles, I assessed each model's capability to generate word embeddings\nthat delineate parallel from non-parallel passages. Utilizing cosine similarity\nand Wasserstein Distance measures, I found that E5 and AlephBERT show\nsignificant promise, with E5 excelling in parallel detection and AlephBERT\ndemonstrating stronger non-parallel differentiation. These findings indicate\nthat pre-trained models can enhance the efficiency and accuracy of detecting\nintertextual parallels in ancient texts, suggesting broader applications for\nancient language studies.",
+    "url": "http://arxiv.org/abs/2506.24117v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24117v1",
+    "published": "2025-06-30T17:57:27+00:00",
+    "categories": [
+      "cs.CL"
+    ],
+    "arxiv_id": "2506.24117v1"
+  },
+  {
+    "title": "Nonlinear Symmetry-Fragmentation of Nonabelian Anyons In Symmetry-Enriched Topological Phases: A String-Net Model Realization",
+    "authors": [
+      "Nianrui Fu",
+      "Siyuan Wang",
+      "Yu Zhao",
+      "Yidun Wan"
+    ],
+    "abstract": "Symmetry-enriched topological (SET) phases combine intrinsic topological\norder with global symmetries, giving rise to novel symmetry phenomena. While\nSET phases with Abelian anyons are relatively well understood, those involving\nnon-Abelian anyons remain elusive. This obscurity stems from the\nmulti-dimensional internal gauge spaces intrinsic to non-Abelian anyons -- a\nfeature first made explicit in [1,2] and further explored and formalized in our\nrecent works [3-8]. These internal spaces can transform in highly nontrivial\nways under global symmetries. In this work, we employ an exactly solvable model\n-- the multifusion Hu-Geer-Wu string-net model introduced in a companion paper\n[9] -- to reveal how the internal gauge spaces of non-Abelian anyons transform\nunder symmetries. We uncover a universal mechanism, global symmetry\nfragmentation (GSF), whereby symmetry-invariant anyons exhibit internal Hilbert\nspace decompositions into eigensubspaces labeled by generally fractional\nsymmetry charges. Meanwhile, symmetry-permuted anyons hybridize and fragment\ntheir internal spaces in accordance with their symmetry behavior. These\nfragmented structures realize genuinely nonlinear symmetry representations --\nto be termed coherent representations -- that transcend conventional linear and\nprojective classifications, reflecting the categorical nature of symmetries in\ntopological phases. Our results identify nonlinear fragmentation as a hallmark\nof non-Abelian SETs and suggest new routes for symmetry-enabled control in\ntopological quantum computation.",
+    "url": "http://arxiv.org/abs/2506.24115v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24115v1",
+    "published": "2025-06-30T17:57:02+00:00",
+    "categories": [
+      "cond-mat.str-el",
+      "cond-mat.stat-mech",
+      "hep-th",
+      "math-ph",
+      "math.MP"
+    ],
+    "arxiv_id": "2506.24115v1"
+  },
+  {
+    "title": "Epona: Autoregressive Diffusion World Model for Autonomous Driving",
+    "authors": [
+      "Kaiwen Zhang",
+      "Zhenyu Tang",
+      "Xiaotao Hu",
+      "Xingang Pan",
+      "Xiaoyang Guo",
+      "Yuan Liu",
+      "Jingwei Huang",
+      "Li Yuan",
+      "Qian Zhang",
+      "Xiao-Xiao Long",
+      "Xun Cao",
+      "Wei Yin"
+    ],
+    "abstract": "Diffusion models have demonstrated exceptional visual quality in video\ngeneration, making them promising for autonomous driving world modeling.\nHowever, existing video diffusion-based world models struggle with\nflexible-length, long-horizon predictions and integrating trajectory planning.\nThis is because conventional video diffusion models rely on global joint\ndistribution modeling of fixed-length frame sequences rather than sequentially\nconstructing localized distributions at each timestep. In this work, we propose\nEpona, an autoregressive diffusion world model that enables localized\nspatiotemporal distribution modeling through two key innovations: 1) Decoupled\nspatiotemporal factorization that separates temporal dynamics modeling from\nfine-grained future world generation, and 2) Modular trajectory and video\nprediction that seamlessly integrate motion planning with visual modeling in an\nend-to-end framework. Our architecture enables high-resolution, long-duration\ngeneration while introducing a novel chain-of-forward training strategy to\naddress error accumulation in autoregressive loops. Experimental results\ndemonstrate state-of-the-art performance with 7.4\\% FVD improvement and minutes\nlonger prediction duration compared to prior works. The learned world model\nfurther serves as a real-time motion planner, outperforming strong end-to-end\nplanners on NAVSIM benchmarks. Code will be publicly available at\n\\href{https://github.com/Kevin-thu/Epona/}{https://github.com/Kevin-thu/Epona/}.",
+    "url": "http://arxiv.org/abs/2506.24113v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24113v1",
+    "published": "2025-06-30T17:56:35+00:00",
+    "categories": [
+      "cs.CV"
+    ],
+    "arxiv_id": "2506.24113v1"
+  },
+  {
+    "title": "Singular value transformation for unknown quantum channels",
+    "authors": [
+      "Ryotaro Niwa",
+      "Zane Marius Rossi",
+      "Philip Taranto",
+      "Mio Murao"
+    ],
+    "abstract": "Given the ability to apply an unknown quantum channel acting on a\n$d$-dimensional system, we develop a quantum algorithm for transforming its\nsingular values. The spectrum of a quantum channel as a superoperator is\nnaturally tied to its Liouville representation, which is in general\nnon-Hermitian. Our key contribution is an approximate block-encoding scheme for\nthis representation in a Hermitized form, given only black-box access to the\nchannel; this immediately allows us to apply polynomial transformations to the\nchannel's singular values by quantum singular value transformation (QSVT). We\nthen demonstrate an $O(d^2/\\delta)$ upper bound and an $\\Omega(d/\\delta)$ lower\nbound for the query complexity of constructing a quantum channel that is\n$\\delta$-close in diamond norm to a block-encoding of the Hermitized Liouville\nrepresentation. We show our method applies practically to the problem of\nlearning the $q$-th singular value moments of unknown quantum channels for\narbitrary $q>2, q\\in \\mathbb{R}$, which has implications for testing if a\nquantum channel is entanglement breaking.",
+    "url": "http://arxiv.org/abs/2506.24112v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24112v1",
+    "published": "2025-06-30T17:56:07+00:00",
+    "categories": [
+      "quant-ph"
+    ],
+    "arxiv_id": "2506.24112v1"
+  },
+  {
+    "title": "Pricing Fractal Derivatives under Sub-Mixed Fractional Brownian Motion with Jumps",
+    "authors": [
+      "Nader Karimi"
+    ],
+    "abstract": "We study the pricing of derivative securities in financial markets modeled by\na sub-mixed fractional Brownian motion with jumps (smfBm-J), a non-Markovian\nprocess that captures both long-range dependence and jump discontinuities.\nUnder this model, we derive a fractional integro-partial differential equation\n(PIDE) governing the option price dynamics.\n  Using semigroup theory, we establish the existence and uniqueness of mild\nsolutions to this PIDE. For European options, we obtain a closed-form pricing\nformula via Mellin-Laplace transform techniques. Furthermore, we propose a\nGrunwald-Letnikov finite-difference scheme for solving the PIDE numerically and\nprovide a stability and convergence analysis.\n  Empirical experiments demonstrate the accuracy and flexibility of the model\nin capturing market phenomena such as memory and heavy-tailed jumps,\nparticularly for barrier options. These results underline the potential of\nfractional-jump models in financial engineering and derivative pricing.",
+    "url": "http://arxiv.org/abs/2506.24111v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24111v1",
+    "published": "2025-06-30T17:55:36+00:00",
+    "categories": [
+      "q-fin.PR"
+    ],
+    "arxiv_id": "2506.24111v1"
+  },
+  {
+    "title": "Development of Hybrid Artificial Intelligence Training on Real and Synthetic Data: Benchmark on Two Mixed Training Strategies",
+    "authors": [
+      "Paul Wachter",
+      "Lukas Niehaus",
+      "Julius Schöning"
+    ],
+    "abstract": "Synthetic data has emerged as a cost-effective alternative to real data for\ntraining artificial neural networks (ANN). However, the disparity between\nsynthetic and real data results in a domain gap. That gap leads to poor\nperformance and generalization of the trained ANN when applied to real-world\nscenarios. Several strategies have been developed to bridge this gap, which\ncombine synthetic and real data, known as mixed training using hybrid datasets.\nWhile these strategies have been shown to mitigate the domain gap, a systematic\nevaluation of their generalizability and robustness across various tasks and\narchitectures remains underexplored. To address this challenge, our study\ncomprehensively analyzes two widely used mixing strategies on three prevalent\narchitectures and three distinct hybrid datasets. From these datasets, we\nsample subsets with varying proportions of synthetic to real data to\ninvestigate the impact of synthetic and real components. The findings of this\npaper provide valuable insights into optimizing the use of synthetic data in\nthe training process of any ANN, contributing to enhancing robustness and\nefficacy.",
+    "url": "http://arxiv.org/abs/2506.24093v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24093v1",
+    "published": "2025-06-30T17:48:14+00:00",
+    "categories": [
       "cs.LG",
-      "cs.SY",
-      "eess.SY",
-      "I.2.7; I.2.6; I.2.1; D.3.3; C.4"
+      "cs.AI",
+      "I.2.1; I.2.0; F.2.3"
     ],
-    "arxiv_id": "2506.18887v1"
+    "arxiv_id": "2506.24093v1"
   },
   {
-    "title": "Learning Physical Systems: Symplectification via Gauge Fixing in Dirac Structures",
+    "title": "SQUASH: A SWAP-Based Quantum Attack to Sabotage Hybrid Quantum Neural Networks",
     "authors": [
-      "Aristotelis Papatheodorou",
-      "Pranav Vaidhyanathan",
-      "Natalia Ares",
-      "Ioannis Havoutis"
+      "Rahul Kumar",
+      "Wenqi Wei",
+      "Ying Mao",
+      "Junaid Farooq",
+      "Ying Wang",
+      "Juntao Chen"
     ],
-    "abstract": "Physics-informed deep learning has achieved remarkable progress by embedding\ngeometric priors, such as Hamiltonian symmetries and variational principles,\ninto neural networks, enabling structure-preserving models that extrapolate\nwith high accuracy. However, in systems with dissipation and holonomic\nconstraints, ubiquitous in legged locomotion and multibody robotics, the\ncanonical symplectic form becomes degenerate, undermining the very invariants\nthat guarantee stability and long-term prediction. In this work, we tackle this\nfoundational limitation by introducing Presymplectification Networks (PSNs),\nthe first framework to learn the symplectification lift via Dirac structures,\nrestoring a non-degenerate symplectic geometry by embedding constrained systems\ninto a higher-dimensional manifold. Our architecture combines a recurrent\nencoder with a flow-matching objective to learn the augmented phase-space\ndynamics end-to-end. We then attach a lightweight Symplectic Network (SympNet)\nto forecast constrained trajectories while preserving energy, momentum, and\nconstraint satisfaction. We demonstrate our method on the dynamics of the\nANYmal quadruped robot, a challenging contact-rich, multibody system. To the\nbest of our knowledge, this is the first framework that effectively bridges the\ngap between constrained, dissipative mechanical systems and symplectic\nlearning, unlocking a whole new class of geometric machine learning models,\ngrounded in first principles yet adaptable from data.",
-    "url": "http://arxiv.org/abs/2506.18812v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18812v1",
-    "published": "2025-06-23T16:23:37+00:00",
+    "abstract": "We propose a circuit-level attack, SQUASH, a SWAP-Based Quantum Attack to\nsabotage Hybrid Quantum Neural Networks (HQNNs) for classification tasks.\nSQUASH is executed by inserting SWAP gate(s) into the variational quantum\ncircuit of the victim HQNN. Unlike conventional noise-based or adversarial\ninput attacks, SQUASH directly manipulates the circuit structure, leading to\nqubit misalignment and disrupting quantum state evolution. This attack is\nhighly stealthy, as it does not require access to training data or introduce\ndetectable perturbations in input states. Our results demonstrate that SQUASH\nsignificantly degrades classification performance, with untargeted SWAP attacks\nreducing accuracy by up to 74.08\\% and targeted SWAP attacks reducing target\nclass accuracy by up to 79.78\\%. These findings reveal a critical vulnerability\nin HQNN implementations, underscoring the need for more resilient architectures\nagainst circuit-level adversarial interventions.",
+    "url": "http://arxiv.org/abs/2506.24081v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24081v1",
+    "published": "2025-06-30T17:36:31+00:00",
     "categories": [
-      "cs.RO",
+      "quant-ph",
+      "cs.AI",
       "cs.LG"
     ],
-    "arxiv_id": "2506.18812v1"
+    "arxiv_id": "2506.24081v1"
   },
   {
-    "title": "A Multi-view Divergence-Convergence Feature Augmentation Framework for Drug-related Microbes Prediction",
+    "title": "Navigating with Annealing Guidance Scale in Diffusion Space",
     "authors": [
-      "Xin An",
-      "Ruijie Li",
-      "Qiao Ning",
-      "Shikai Guo",
-      "Hui Li",
-      "Qian Ma"
+      "Shai Yehezkel",
+      "Omer Dahary",
+      "Andrey Voynov",
+      "Daniel Cohen-Or"
     ],
-    "abstract": "In the study of drug function and precision medicine, identifying new\ndrug-microbe associations is crucial. However, current methods isolate\nassociation and similarity analysis of drug and microbe, lacking effective\ninter-view optimization and coordinated multi-view feature fusion. In our\nstudy, a multi-view Divergence-Convergence Feature Augmentation framework for\nDrug-related Microbes Prediction (DCFA_DMP) is proposed, to better learn and\nintegrate association information and similarity information. In the divergence\nphase, DCFA_DMP strengthens the complementarity and diversity between\nheterogeneous information and similarity information by performing Adversarial\nLearning method between the association network view and different similarity\nviews, optimizing the feature space. In the convergence phase, a novel\nBidirectional Synergistic Attention Mechanism is proposed to deeply synergize\nthe complementary features between different views, achieving a deep fusion of\nthe feature space. Moreover, Transformer graph learning is alternately applied\non the drug-microbe heterogeneous graph, enabling each drug or microbe node to\nfocus on the most relevant nodes. Numerous experiments demonstrate DCFA_DMP's\nsignificant performance in predicting drug-microbe associations. It also proves\neffectiveness in predicting associations for new drugs and microbes in cold\nstart experiments, further confirming its stability and reliability in\npredicting potential drug-microbe associations.",
-    "url": "http://arxiv.org/abs/2506.18797v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18797v1",
-    "published": "2025-06-23T16:03:46+00:00",
+    "abstract": "Denoising diffusion models excel at generating high-quality images\nconditioned on text prompts, yet their effectiveness heavily relies on careful\nguidance during the sampling process. Classifier-Free Guidance (CFG) provides a\nwidely used mechanism for steering generation by setting the guidance scale,\nwhich balances image quality and prompt alignment. However, the choice of the\nguidance scale has a critical impact on the convergence toward a visually\nappealing and prompt-adherent image. In this work, we propose an annealing\nguidance scheduler which dynamically adjusts the guidance scale over time based\non the conditional noisy signal. By learning a scheduling policy, our method\naddresses the temperamental behavior of CFG. Empirical results demonstrate that\nour guidance scheduler significantly enhances image quality and alignment with\nthe text prompt, advancing the performance of text-to-image generation.\nNotably, our novel scheduler requires no additional activations or memory\nconsumption, and can seamlessly replace the common classifier-free guidance,\noffering an improved trade-off between prompt alignment and quality.",
+    "url": "http://arxiv.org/abs/2506.24108v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24108v1",
+    "published": "2025-06-30T17:55:00+00:00",
     "categories": [
-      "cs.LG"
-    ],
-    "arxiv_id": "2506.18797v1"
-  },
-  {
-    "title": "Focus Your Attention: Towards Data-Intuitive Lightweight Vision Transformers",
-    "authors": [
-      "Suyash Gaurav",
-      "Muhammad Farhan Humayun",
-      "Jukka Heikkonen",
-      "Jatin Chaudhary"
-    ],
-    "abstract": "The evolution of Vision Transformers has led to their widespread adaptation\nto different domains. Despite large-scale success, there remain significant\nchallenges including their reliance on extensive computational and memory\nresources for pre-training on huge datasets as well as difficulties in\ntask-specific transfer learning. These limitations coupled with energy\ninefficiencies mainly arise due to the computation-intensive self-attention\nmechanism. To address these issues, we propose a novel Super-Pixel Based Patch\nPooling (SPPP) technique that generates context-aware, semantically rich, patch\nembeddings to effectively reduce the architectural complexity and improve\nefficiency. Additionally, we introduce the Light Latent Attention (LLA) module\nin our pipeline by integrating latent tokens into the attention mechanism\nallowing cross-attention operations to significantly reduce the time and space\ncomplexity of the attention module. By leveraging the data-intuitive patch\nembeddings coupled with dynamic positional encodings, our approach adaptively\nmodulates the cross-attention process to focus on informative regions while\nmaintaining the global semantic structure. This targeted attention improves\ntraining efficiency and accelerates convergence. Notably, the SPPP module is\nlightweight and can be easily integrated into existing transformer\narchitectures. Extensive experiments demonstrate that our proposed architecture\nprovides significant improvements in terms of computational efficiency while\nachieving comparable results with the state-of-the-art approaches, highlighting\nits potential for energy-efficient transformers suitable for edge deployment.\n(The code is available on our GitHub repository:\nhttps://github.com/zser092/Focused-Attention-ViT).",
-    "url": "http://arxiv.org/abs/2506.18791v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18791v1",
-    "published": "2025-06-23T16:00:57+00:00",
-    "categories": [
+      "cs.GR",
+      "cs.AI",
       "cs.CV",
       "cs.LG"
     ],
-    "arxiv_id": "2506.18791v1"
+    "arxiv_id": "2506.24108v1"
   },
   {
-    "title": "DPG loss functions for learning parameter-to-solution maps by neural networks",
+    "title": "Ruelle-Pollicott resonances of diffusive U(1)-invariant qubit circuits",
     "authors": [
-      "Pablo Cortés Castillo",
-      "Wolfgang Dahmen",
-      "Jay Gopalakrishnan"
+      "Urban Duh",
+      "Marko Žnidarič"
     ],
-    "abstract": "We develop, analyze, and experimentally explore residual-based loss functions\nfor machine learning of parameter-to-solution maps in the context of\nparameter-dependent families of partial differential equations (PDEs). Our\nprimary concern is on rigorous accuracy certification to enhance prediction\ncapability of resulting deep neural network reduced models. This is achieved by\nthe use of variationally correct loss functions. Through one specific example\nof an elliptic PDE, details for establishing the variational correctness of a\nloss function from an ultraweak Discontinuous Petrov Galerkin (DPG)\ndiscretization are worked out. Despite the focus on the example, the proposed\nconcepts apply to a much wider scope of problems, namely problems for which\nstable DPG formulations are available. The issue of {high-contrast} diffusion\nfields and ensuing difficulties with degrading ellipticity are discussed. Both\nnumerical results and theoretical arguments illustrate that for high-contrast\ndiffusion parameters the proposed DPG loss functions deliver much more robust\nperformance than simpler least-squares losses.",
-    "url": "http://arxiv.org/abs/2506.18773v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18773v1",
-    "published": "2025-06-23T15:40:56+00:00",
+    "abstract": "We study Ruelle-Pollicott resonances of translationally invariant\nmagnetization-conserving qubit circuits via the spectrum of the\nquasi-momentum-resolved truncated propagator of extensive observables.\nDiffusive transport of the conserved magnetization is reflected in the Gaussian\nquasi-momentum $k$ dependence of the leading eigenvalue (Ruelle-Pollicott\nresonance) of the truncated propagator for small $k$. This, in particular,\nallows us to extract the diffusion constant. For large $k$, the leading\nRuelle-Pollicott resonance is not related to transport and governs the\nexponential decay of correlation functions. Additionally, we conjecture the\nexistence of a continuum of eigenvalues below the leading diffusive resonance,\nwhich governs non-exponential decay, for instance, power-law hydrodynamic\ntails. We expect our conclusions to hold for generic systems with exactly one\nU(1) conserved quantity.",
+    "url": "http://arxiv.org/abs/2506.24097v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24097v1",
+    "published": "2025-06-30T17:49:16+00:00",
     "categories": [
-      "math.NA",
-      "cs.LG",
-      "cs.NA"
+      "cond-mat.stat-mech",
+      "nlin.CD",
+      "quant-ph"
     ],
-    "arxiv_id": "2506.18773v1"
+    "arxiv_id": "2506.24097v1"
   },
   {
-    "title": "Neural Total Variation Distance Estimators for Changepoint Detection in News Data",
+    "title": "State Change via One-Dimensional Scattering in Quantum Mechanics",
     "authors": [
-      "Csaba Zsolnai",
-      "Niels Lörch",
-      "Julian Arnold"
+      "Olivia Pomerenk",
+      "Charles S. Peskin"
     ],
-    "abstract": "Detecting when public discourse shifts in response to major events is crucial\nfor understanding societal dynamics. Real-world data is high-dimensional,\nsparse, and noisy, making changepoint detection in this domain a challenging\nendeavor. In this paper, we leverage neural networks for changepoint detection\nin news data, introducing a method based on the so-called learning-by-confusion\nscheme, which was originally developed for detecting phase transitions in\nphysical systems. We train classifiers to distinguish between articles from\ndifferent time periods. The resulting classification accuracy is used to\nestimate the total variation distance between underlying content distributions,\nwhere significant distances highlight changepoints. We demonstrate the\neffectiveness of this method on both synthetic datasets and real-world data\nfrom The Guardian newspaper, successfully identifying major historical events\nincluding 9/11, the COVID-19 pandemic, and presidential elections. Our approach\nrequires minimal domain knowledge, can autonomously discover significant shifts\nin public discourse, and yields a quantitative measure of change in content,\nmaking it valuable for journalism, policy analysis, and crisis monitoring.",
-    "url": "http://arxiv.org/abs/2506.18764v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18764v1",
-    "published": "2025-06-23T15:33:30+00:00",
+    "abstract": "We consider a pair of particles that interact in a one-dimensional setting\nvia a delta-function potential. One of the particles is confined to a\none-dimensional box, and the other particle is free. The free particle is\nincident from the left with specified energy, and it may cause changes in state\nof the confined particle before flying away to the left or to the right. We\npresent a non-perturbative formulation and computational scheme that determines\nthe probability of any such outcome, as a function of the initial state of the\nconfined particle and the energy of the incident particle.",
+    "url": "http://arxiv.org/abs/2506.24090v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24090v1",
+    "published": "2025-06-30T17:45:37+00:00",
     "categories": [
-      "cs.LG",
-      "cs.CL",
-      "cs.CY",
-      "cs.SI"
+      "quant-ph"
     ],
-    "arxiv_id": "2506.18764v1"
+    "arxiv_id": "2506.24090v1"
   },
   {
-    "title": "Fast State-Augmented Learning for Wireless Resource Allocation with Dual Variable Regression",
+    "title": "MotionGPT3: Human Motion as a Second Modality",
     "authors": [
-      "Yigit Berkay Uslu",
-      "Navid NaderiAlizadeh",
-      "Mark Eisen",
-      "Alejandro Ribeiro"
+      "Bingfan Zhu",
+      "Biao Jiang",
+      "Sunyi Wang",
+      "Shixiang Tang",
+      "Tao Chen",
+      "Linjie Luo",
+      "Youyi Zheng",
+      "Xin Chen"
     ],
-    "abstract": "We consider resource allocation problems in multi-user wireless networks,\nwhere the goal is to optimize a network-wide utility function subject to\nconstraints on the ergodic average performance of users. We demonstrate how a\nstate-augmented graph neural network (GNN) parametrization for the resource\nallocation policy circumvents the drawbacks of the ubiquitous dual subgradient\nmethods by representing the network configurations (or states) as graphs and\nviewing dual variables as dynamic inputs to the model, viewed as graph signals\nsupported over the graphs. Lagrangian maximizing state-augmented policies are\nlearned during the offline training phase, and the dual variables evolve\nthrough gradient updates while executing the learned state-augmented policies\nduring the inference phase. Our main contributions are to illustrate how\nnear-optimal initialization of dual multipliers for faster inference can be\naccomplished with dual variable regression, leveraging a secondary GNN\nparametrization, and how maximization of the Lagrangian over the multipliers\nsampled from the dual descent dynamics substantially improves the training of\nstate-augmented models. We demonstrate the superior performance of the proposed\nalgorithm with extensive numerical experiments in a case study of transmit\npower control. Finally, we prove a convergence result and an exponential\nprobability bound on the excursions of the dual function (iterate) optimality\ngaps.",
-    "url": "http://arxiv.org/abs/2506.18748v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18748v1",
-    "published": "2025-06-23T15:20:58+00:00",
+    "abstract": "Though recent advances in multimodal models have demonstrated strong\ncapabilities and opportunities in unified understanding and generation, the\ndevelopment of unified motion-language models remains underexplored. To enable\nsuch models with high-fidelity human motion, two core challenges must be\naddressed. The first is the reconstruction gap between the continuous motion\nmodality and discrete representation in an autoregressive manner, and the\nsecond is the degradation of language intelligence during unified training.\nInspired by the mixture of experts, we propose MotionGPT3, a bimodal\nmotion-language model that treats human motion as a second modality, decoupling\nmotion modeling via separate model parameters and enabling both effective\ncross-modal interaction and efficient multimodal scaling training. To preserve\nlanguage intelligence, the text branch retains the original structure and\nparameters of the pretrained language model, while a new motion branch is\nintegrated via a shared attention mechanism, enabling bidirectional information\nflow between two modalities. We first employ a motion Variational Autoencoder\n(VAE) to encode raw human motion into latent representations. Based on this\ncontinuous latent space, the motion branch predicts motion latents directly\nfrom intermediate hidden states using a diffusion head, bypassing discrete\ntokenization. Extensive experiments show that our approach achieves competitive\nperformance on both motion understanding and generation tasks while preserving\nstrong language capabilities, establishing a unified bimodal motion diffusion\nframework within an autoregressive manner.",
+    "url": "http://arxiv.org/abs/2506.24086v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24086v1",
+    "published": "2025-06-30T17:42:22+00:00",
     "categories": [
-      "eess.SP",
-      "cs.LG"
-    ],
-    "arxiv_id": "2506.18748v1"
-  },
-  {
-    "title": "On the Existence of Universal Simulators of Attention",
-    "authors": [
-      "Debanjan Dutta",
-      "Faizanuddin Ansari",
-      "Anish Chakrabarty",
-      "Swagatam Das"
-    ],
-    "abstract": "Prior work on the learnability of transformers has established its capacity\nto approximate specific algorithmic patterns through training under restrictive\narchitectural assumptions. Fundamentally, these arguments remain data-driven\nand therefore can only provide a probabilistic guarantee. Expressivity, on the\ncontrary, has theoretically been explored to address the problems\n\\emph{computable} by such architecture. These results proved the\nTuring-completeness of transformers, investigated bounds focused on circuit\ncomplexity, and formal logic. Being at the crossroad between learnability and\nexpressivity, the question remains: \\emph{can transformer architectures exactly\nsimulate an arbitrary attention mechanism, or in particular, the underlying\noperations?} In this study, we investigate the transformer encoder's ability to\nsimulate a vanilla attention mechanism. By constructing a universal simulator\n$\\mathcal{U}$ composed of transformer encoders, we present algorithmic\nsolutions to identically replicate attention outputs and the underlying\nelementary matrix and activation operations via RASP, a formal framework for\ntransformer computation. Our proofs, for the first time, show the existence of\nan algorithmically achievable data-agnostic solution, previously known to be\napproximated only by learning.",
-    "url": "http://arxiv.org/abs/2506.18739v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18739v1",
-    "published": "2025-06-23T15:15:25+00:00",
-    "categories": [
-      "cs.LG",
-      "cs.AI"
-    ],
-    "arxiv_id": "2506.18739v1"
-  },
-  {
-    "title": "Multi-modal Anchor Gated Transformer with Knowledge Distillation for Emotion Recognition in Conversation",
-    "authors": [
-      "Jie Li",
-      "Shifei Ding",
-      "Lili Guo",
-      "Xuan Li"
-    ],
-    "abstract": "Emotion Recognition in Conversation (ERC) aims to detect the emotions of\nindividual utterances within a conversation. Generating efficient and\nmodality-specific representations for each utterance remains a significant\nchallenge. Previous studies have proposed various models to integrate features\nextracted using different modality-specific encoders. However, they neglect the\nvarying contributions of modalities to this task and introduce high complexity\nby aligning modalities at the frame level. To address these challenges, we\npropose the Multi-modal Anchor Gated Transformer with Knowledge Distillation\n(MAGTKD) for the ERC task. Specifically, prompt learning is employed to enhance\ntextual modality representations, while knowledge distillation is utilized to\nstrengthen representations of weaker modalities. Furthermore, we introduce a\nmulti-modal anchor gated transformer to effectively integrate utterance-level\nrepresentations across modalities. Extensive experiments on the IEMOCAP and\nMELD datasets demonstrate the effectiveness of knowledge distillation in\nenhancing modality representations and achieve state-of-the-art performance in\nemotion recognition. Our code is available at:\nhttps://github.com/JieLi-dd/MAGTKD.",
-    "url": "http://arxiv.org/abs/2506.18716v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18716v1",
-    "published": "2025-06-23T14:53:22+00:00",
-    "categories": [
-      "cs.LG",
+      "cs.CV",
       "cs.CL"
     ],
-    "arxiv_id": "2506.18716v1"
+    "arxiv_id": "2506.24086v1"
   },
   {
-    "title": "SaGIF: Improving Individual Fairness in Graph Neural Networks via Similarity Encoding",
+    "title": "Imagine for Me: Creative Conceptual Blending of Real Images and Text via Blended Attention",
     "authors": [
-      "Yuchang Zhu",
-      "Jintang Li",
-      "Huizhe Zhang",
-      "Liang Chen",
-      "Zibin Zheng"
+      "Wonwoong Cho",
+      "Yanxia Zhang",
+      "Yan-Ying Chen",
+      "David I. Inouye"
     ],
-    "abstract": "Individual fairness (IF) in graph neural networks (GNNs), which emphasizes\nthe need for similar individuals should receive similar outcomes from GNNs, has\nbeen a critical issue. Despite its importance, research in this area has been\nlargely unexplored in terms of (1) a clear understanding of what induces\nindividual unfairness in GNNs and (2) a comprehensive consideration of\nidentifying similar individuals. To bridge these gaps, we conduct a preliminary\nanalysis to explore the underlying reason for individual unfairness and observe\ncorrelations between IF and similarity consistency, a concept introduced to\nevaluate the discrepancy in identifying similar individuals based on graph\nstructure versus node features. Inspired by our observations, we introduce two\nmetrics to assess individual similarity from two distinct perspectives:\ntopology fusion and feature fusion. Building upon these metrics, we propose\nSimilarity-aware GNNs for Individual Fairness, named SaGIF. The key insight\nbehind SaGIF is the integration of individual similarities by independently\nlearning similarity representations, leading to an improvement of IF in GNNs.\nOur experiments on several real-world datasets validate the effectiveness of\nour proposed metrics and SaGIF. Specifically, SaGIF consistently outperforms\nstate-of-the-art IF methods while maintaining utility performance. Code is\navailable at: https://github.com/ZzoomD/SaGIF.",
-    "url": "http://arxiv.org/abs/2506.18696v1",
-    "pdf_url": "http://arxiv.org/pdf/2506.18696v1",
-    "published": "2025-06-23T14:34:26+00:00",
+    "abstract": "Blending visual and textual concepts into a new visual concept is a unique\nand powerful trait of human beings that can fuel creativity. However, in\npractice, cross-modal conceptual blending for humans is prone to cognitive\nbiases, like design fixation, which leads to local minima in the design space.\nIn this paper, we propose a T2I diffusion adapter \"IT-Blender\" that can\nautomate the blending process to enhance human creativity. Prior works related\nto cross-modal conceptual blending are limited in encoding a real image without\nloss of details or in disentangling the image and text inputs. To address these\ngaps, IT-Blender leverages pretrained diffusion models (SD and FLUX) to blend\nthe latent representations of a clean reference image with those of the noisy\ngenerated image. Combined with our novel blended attention, IT-Blender encodes\nthe real reference image without loss of details and blends the visual concept\nwith the object specified by the text in a disentangled way. Our experiment\nresults show that IT-Blender outperforms the baselines by a large margin in\nblending visual and textual concepts, shedding light on the new application of\nimage generative models to augment human creativity.",
+    "url": "http://arxiv.org/abs/2506.24085v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24085v1",
+    "published": "2025-06-30T17:41:25+00:00",
     "categories": [
-      "cs.LG"
+      "cs.CV",
+      "cs.AI"
     ],
-    "arxiv_id": "2506.18696v1"
+    "arxiv_id": "2506.24085v1"
   }
 ]

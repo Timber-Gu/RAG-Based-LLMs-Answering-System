@@ -39,6 +39,11 @@ class Settings(BaseModel):
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 200
     
+    # LLM-based Chunking Settings
+    USE_LLM_CHUNKING: bool = os.getenv("USE_LLM_CHUNKING", "true").lower() == "true"
+    LLM_CHUNKING_MODEL: str = os.getenv("LLM_CHUNKING_MODEL", "gpt-3.5-turbo")
+    MAX_CHUNK_SIZE: int = int(os.getenv("MAX_CHUNK_SIZE", "1500"))
+    
     # Data Settings
     MAX_PAPERS: int = 20  # Start small for testing
     DATA_DIR: str = "data"

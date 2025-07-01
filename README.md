@@ -82,6 +82,15 @@ A **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, p
    # Ollama Settings (Optional - for Research Agent)
    OLLAMA_BASE_URL=http://127.0.0.1:11434
    RESEARCH_MODEL=llama3.1
+   
+   # Text Processing Settings
+   CHUNK_SIZE=1000
+   CHUNK_OVERLAP=200
+   
+   # LLM-based Chunking Settings
+   USE_LLM_CHUNKING=true
+   LLM_CHUNKING_MODEL=gpt-3.5-turbo
+   MAX_CHUNK_SIZE=1500
    ```
 
 4. **Pinecone Setup**
@@ -121,6 +130,9 @@ Once the system is running, you can use these commands:
 - `AGENT_MAX_TOKENS`: Maximum response length (default: 1000)
 - `CHUNK_SIZE`: Size of text chunks for vector storage (default: 1000)
 - `CHUNK_OVERLAP`: Overlap between chunks (default: 200)
+- `USE_LLM_CHUNKING`: Enable LLM-based semantic chunking (default: true)
+- `LLM_CHUNKING_MODEL`: Model to use for semantic chunking (default: gpt-3.5-turbo)
+- `MAX_CHUNK_SIZE`: Maximum size for LLM-based chunks (default: 1500)
 - `OLLAMA_BASE_URL`: URL for local Ollama instance (default: http://127.0.0.1:11434)
 - `RESEARCH_MODEL`: Ollama model to use (default: llama3.1)
 
@@ -189,6 +201,106 @@ Pinecone Vector Store (Hosted llama-text-embed-v2)
 Knowledge Base (ML/DL Papers & Content)
 ```
 
+## 📚 Expanding the Knowledge Base
+
+### 🧠 LLM-Based Semantic Chunking
+
+This project features an advanced **LLM-based semantic chunking** system that intelligently splits documents based on semantic boundaries rather than fixed character limits:
+
+#### Features:
+- **Semantic Awareness**: Uses GPT-3.5-turbo to identify natural breakpoints in academic papers
+- **Context Preservation**: Maintains conceptual integrity by avoiding splits in the middle of equations, code blocks, or important concepts
+- **Adaptive Sizing**: Balances chunk size constraints with semantic coherence
+- **Fallback Mechanism**: Automatically falls back to traditional chunking if LLM processing fails
+- **LangChain Compatible**: Fully integrated with LangChain architecture for unified processing
+
+#### How it Works:
+1. **Analysis**: The LLM analyzes document sections to identify optimal split points
+2. **Boundary Detection**: Prioritizes section boundaries, paragraph breaks, and topic transitions  
+3. **Smart Splitting**: Creates chunks that contain complete thoughts or concepts
+4. **Metadata Enrichment**: Each chunk includes contextual information and parent document references
+5. **Unified Processing**: All chunks flow through the same LangChain-compatible pipeline
+
+#### LangChain Integration:
+- **Document Objects**: LLM chunks are converted to LangChain `Document` objects
+- **Unified Upserting**: Same Pinecone integration for all content types
+- **Metadata Preservation**: Chunk relationships maintained through LangChain pipeline
+- **Hosted Embeddings**: Works seamlessly with Pinecone's hosted embedding models
+
+#### Configuration:
+```env
+USE_LLM_CHUNKING=true              # Enable LLM-based chunking
+LLM_CHUNKING_MODEL=gpt-3.5-turbo   # Model for semantic analysis
+MAX_CHUNK_SIZE=1500                # Target chunk size
+```
+
+#### Benefits over Traditional Chunking:
+- **Better Retrieval**: Semantically coherent chunks improve RAG performance
+- **Context Preservation**: Important concepts aren't split across multiple chunks
+- **Improved Understanding**: Each chunk represents a complete idea or concept
+- **Academic Paper Optimized**: Specifically designed for research paper structure
+- **Architecture Consistency**: No duplicate code paths or conflicting approaches
+
+### Collecting LLM Papers
+The system includes a tool to automatically collect and process LLM-related research papers from arXiv and add them to your knowledge base:
+
+```bash
+# Collect LLM papers and update the knowledge base
+python collect_llm_papers.py
+
+# Specify maximum number of papers to collect
+python collect_llm_papers.py --max-papers 30
+
+# Collect papers and immediately upload to Pinecone
+python collect_llm_papers.py --upload
+
+# Or upload existing knowledge base to Pinecone separately
+python upload_to_pinecone.py
+
+# Upload with options
+python upload_to_pinecone.py --clear  # Clear existing vectors first
+python upload_to_pinecone.py --force  # Force upload even if vectors exist
+
+# Test unified LangChain-compatible chunking
+python test_unified_chunking.py
+```
+
+This tool will:
+1. Search for papers on key LLM topics (transformers, attention mechanisms, etc.)
+2. Extract text from PDFs and add to knowledge base
+3. Save papers locally in the `data/papers` directory
+4. Add basic concept entries for important LLM terms
+5. Automatically upload to Pinecone when using the `--upload` flag
+
+### Supported LLM Topics
+The paper collector searches for the latest research in:
+- Transformer architectures
+- Attention mechanisms
+- LLaMA, GPT, Claude, Mistral models
+- Prompt engineering
+- In-context learning
+- Chain-of-thought
+- Retrieval augmented generation
+- Instruction tuning
+- Constitutional AI
+- Alignment techniques
+- Model evaluation
+- Inference optimization
+- Quantization methods
+- Parameter-efficient fine-tuning
+- Foundation models
+
+### Key LLM Concepts
+The knowledge base is pre-populated with entries covering fundamental LLM concepts like:
+- Self-attention mechanisms
+- Multi-head attention
+- Positional encoding
+- Masked language modeling
+- Zero-shot and few-shot learning
+- RLHF and Constitutional AI
+- Flash Attention
+- And many more
+
 ## 🤖 Agent Specializations
 
 ### Research Agent (Ollama Llama 3.1)
@@ -222,12 +334,15 @@ RAG-Based-LLMs-Answering-System/
 │   │   └── langchain_agents.py    # Multi-agent system with RAG
 │   ├── api/
 │   │   └── langchain_server.py    # FastAPI server (if needed)
+│   ├── data_curation/             # Paper collection and processing
+│   │   └── llm_paper_collector.py # LLM paper collector
 │   └── config.py                  # Configuration management
 ├── data/
 │   ├── knowledge_base.json        # Structured knowledge content
 │   ├── papers/                    # PDF papers (optional)
 │   └── papers_metadata.json       # Paper metadata
 ├── main.py                        # Interactive CLI interface
+├── collect_llm_papers.py          # CLI for paper collection
 ├── requirements.txt               # Python dependencies
 ├── .env.example                   # Environment template
 ├── .gitignore                     # Git ignore rules

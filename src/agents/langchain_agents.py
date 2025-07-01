@@ -17,7 +17,32 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 import os
 import json
+import time
 from ..config import settings
+
+class PineconeHostedEmbeddings:
+    """Custom embeddings class using Pinecone's hosted inference"""
+    def __init__(self, index_name):
+        self.index_name = index_name
+        from pinecone import Pinecone
+        self.pc = Pinecone(api_key=settings.PINECONE_API_KEY)
+        self.index = self.pc.Index(index_name)
+    
+    def embed_documents(self, texts):
+        """
+        For hosted embeddings, we don't actually embed here.
+        We return dummy vectors for LangChain compatibility.
+        The actual embedding happens when documents are upserted via LangChain.
+        """
+        return [[0.0] * 1024 for _ in texts]  # 1024 is llama-text-embed-v2 dimension
+    
+    def embed_query(self, text):
+        """
+        For hosted embeddings, we don't actually embed here.
+        We return a dummy vector for LangChain compatibility.
+        The actual embedding happens during search.
+        """
+        return [0.0] * 1024
 
 class LangChainMLAgents:
     """LangChain-based multi-agent system for ML Q&A"""
@@ -70,9 +95,17 @@ class LangChainMLAgents:
             self.implementation_llm = self.theory_llm
         
         self.vector_store = None
+        self.pinecone_index = None
+        self.embeddings = None
         self.agents = {}
         self._setup_vector_store()
         self._setup_agents()
+    
+    def _clean_text_for_pinecone(self, text):
+        """Clean text for Pinecone storage"""
+        if not text:
+            return ""
+        return str(text).replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').strip()
     
     def _setup_vector_store(self):
         """Setup vector store (Pinecone) for RAG"""
@@ -97,7 +130,15 @@ class LangChainMLAgents:
                         metadata={
                             'title': item.get('title', ''),
                             'source': item.get('source', ''),
-                            'category': item.get('category', 'general')
+                            'category': item.get('category', 'general'),
+                            'type': item.get('type', 'unknown'),
+                            'id': item.get('id', ''),
+                            'authors': item.get('authors', []),
+                            'categories': item.get('categories', []),
+                            # Handle chunk-specific metadata
+                            'chunk_index': item.get('chunk_index'),
+                            'total_chunks': item.get('total_chunks'),
+                            'parent_paper_id': item.get('parent_paper_id')
                         }
                     )
                     documents.append(doc)
@@ -147,97 +188,244 @@ class LangChainMLAgents:
             else:
                 print(f"✅ Using existing Pinecone index: {index_name}")
             
-            # Create a custom embedding class that integrates with Pinecone's hosted inference
-            class PineconeHostedEmbeddings:
-                """Custom embeddings class using Pinecone's hosted inference"""
-                def __init__(self, index_name):
-                    self.index_name = index_name
-                    self.pc = Pinecone(api_key=settings.PINECONE_API_KEY)
-                    self.index = self.pc.Index(index_name)
-                
-                def embed_documents(self, texts):
-                    """
-                    For hosted embeddings, we don't actually embed here.
-                    We return dummy vectors for LangChain compatibility.
-                    The actual embedding happens when documents are upserted via LangChain.
-                    """
-                    return [[0.0] * 1024 for _ in texts]  # 1024 is llama-text-embed-v2 dimension
-                
-                def embed_query(self, text):
-                    """
-                    For hosted embeddings, we don't actually embed here.
-                    We return a dummy vector for LangChain compatibility.
-                    The actual embedding happens during search.
-                    """
-                    return [0.0] * 1024
-            
             # Create the custom embeddings instance
-            embeddings = PineconeHostedEmbeddings(index_name)
+            self.embeddings = PineconeHostedEmbeddings(index_name)
+            self.pinecone_index = pc.Index(index_name)
             
             # Create LangChain vector store using hosted embeddings
             if documents:
                 print(f"🔄 Setting up LangChain PineconeVectorStore with {len(documents)} documents...")
+                self.upsert_documents_to_pinecone(documents)
                 
-                # For hosted inference, we need to handle the upsert differently
-                # We'll use LangChain's from_documents but with special handling for hosted embeddings
-                
-                # First, let's manually upsert the documents with proper hosted embedding format
-                index = pc.Index(index_name)
-                
-                # Prepare and upsert documents with hosted embeddings (correct API format)
-                records = []
-                for i, doc in enumerate(documents):
-                    # Clean text for Pinecone
-                    def clean_text(text):
-                        """Clean text for Pinecone storage"""
-                        return text.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').strip()
-                    
-                    title = clean_text(str(doc.metadata.get('title', ''))[:80])
-                    source = clean_text(str(doc.metadata.get('source', ''))[:100])
-                    category = str(doc.metadata.get('category', 'general'))
-                    
-                    # Correct format: all fields at top level, not nested in metadata
-                    record = {
-                        "_id": f"doc_{i}",  # Use _id as per Pinecone docs
-                        "text": doc.page_content,  # This will be embedded by Pinecone
-                        "title": title,  # Top-level metadata fields
-                        "source": source,
-                        "category": category
-                    }
-                    records.append(record)
-                
-                # Upsert in batches using correct API format
-                batch_size = 96  # Max for text upserts with hosted embeddings
-                for i in range(0, len(records), batch_size):
-                    batch = records[i:i + batch_size]
-                    # Correct API: namespace first, then records list
-                    index.upsert_records("__default__", batch)
-                    print(f"✅ Uploaded batch {i//batch_size + 1}/{(len(records)-1)//batch_size + 1}")
-                
-                # Now create the LangChain vector store pointing to the same index
-                self.vector_store = PineconeVectorStore(
-                    index_name=index_name,
-                    embedding=embeddings,
-                    text_key="text"  # Field containing the text content
-                )
-                
-                print(f"✅ LangChain PineconeVectorStore created with {len(documents)} documents using hosted embeddings")
-            else:
-                # Create empty vector store
-                self.vector_store = PineconeVectorStore(
-                    index_name=index_name,
-                    embedding=embeddings,
-                    text_key="text"
-                )
-                print("✅ LangChain PineconeVectorStore created (empty) with hosted embeddings")
+            # Create the LangChain vector store pointing to the same index
+            self.vector_store = PineconeVectorStore(
+                index_name=index_name,
+                embedding=self.embeddings,
+                text_key="text"  # Field containing the text content
+            )
             
-            # Store the raw index for advanced operations if needed
-            self.pinecone_index = pc.Index(index_name)
+            print(f"✅ LangChain PineconeVectorStore created with hosted embeddings")
             
         except ImportError as e:
             print(f"❌ Pinecone dependencies error: {e}")
             print("💡 Please install pinecone dependencies: pip install pinecone langchain-pinecone")
             raise e
+    
+    def _truncate_content_for_pinecone(self, content: str, max_bytes: int = 35000) -> str:
+        """
+        Truncate content to fit within Pinecone's metadata size limit
+        Leaves room for other metadata fields
+        """
+        if not content:
+            return ""
+        
+        # Convert to bytes to check actual size
+        content_bytes = content.encode('utf-8')
+        
+        if len(content_bytes) <= max_bytes:
+            return content
+        
+        # Truncate while trying to preserve word boundaries
+        truncated = content_bytes[:max_bytes].decode('utf-8', errors='ignore')
+        
+        # Try to cut at the last complete sentence or paragraph
+        for delimiter in ['\n\n', '. ', '\n', ' ']:
+            last_pos = truncated.rfind(delimiter)
+            if last_pos > max_bytes * 0.8:  # Only if we don't lose too much content
+                truncated = truncated[:last_pos + len(delimiter)]
+                break
+        
+        # Add truncation indicator
+        if len(content_bytes) > max_bytes:
+            truncated += "\n\n[Content truncated due to size limits...]"
+        
+        return truncated
+
+    def upsert_documents_to_pinecone(self, documents: List[Document], namespace: str = "__default__"):
+        """
+        Unified method to upsert LangChain Documents to Pinecone with hosted embeddings
+        This method maintains LangChain compatibility while handling the hosted embedding format
+        """
+        if not self.pinecone_index:
+            print("❌ Pinecone index not initialized")
+            return False
+        
+        try:
+            # Prepare records for upsert in Pinecone hosted embedding format
+            records = []
+            skipped_count = 0
+            
+            for i, doc in enumerate(documents):
+                # Extract metadata with proper handling of different types
+                title = self._clean_text_for_pinecone(str(doc.metadata.get('title', '')))[:80]
+                source = self._clean_text_for_pinecone(str(doc.metadata.get('source', '')))[:100]
+                entry_type = str(doc.metadata.get('type', 'unknown'))
+                entry_id = doc.metadata.get('id', f"doc_{i}")
+                authors = doc.metadata.get('authors', [])
+                categories = doc.metadata.get('categories', [])
+                
+                # Truncate content to fit within Pinecone limits
+                content = self._truncate_content_for_pinecone(doc.page_content)
+                
+                # Skip empty content after truncation
+                if not content.strip():
+                    print(f"⚠️ Skipping document {entry_id} - empty content after processing")
+                    skipped_count += 1
+                    continue
+                
+                # Base record structure for hosted embeddings
+                record = {
+                    "_id": entry_id,
+                    "text": content,  # This will be embedded by Pinecone
+                    "title": title,
+                    "source": source,
+                    "type": entry_type,
+                    "authors": ', '.join(authors)[:200] if authors else '',  # Limit authors field
+                    "categories": ', '.join(categories)[:200] if categories else ''  # Limit categories field
+                }
+                
+                # Add chunk-specific metadata if present (for LLM chunked content)
+                if doc.metadata.get('chunk_index') is not None:
+                    record.update({
+                        "chunk_index": str(doc.metadata.get('chunk_index', 0)),
+                        "total_chunks": str(doc.metadata.get('total_chunks', 1)),
+                        "parent_paper_id": str(doc.metadata.get('parent_paper_id', ''))[:50]  # Limit parent ID
+                    })
+                
+                # Estimate total record size
+                record_size = sum(len(str(v).encode('utf-8')) for v in record.values())
+                if record_size > 40000:  # Still too big
+                    print(f"⚠️ Skipping document {entry_id} - still too large after truncation ({record_size} bytes)")
+                    skipped_count += 1
+                    continue
+                
+                records.append(record)
+            
+            if skipped_count > 0:
+                print(f"⚠️ Skipped {skipped_count} documents due to size constraints")
+            
+            if not records:
+                print("❌ No valid records to upload after processing")
+                return False
+            
+            # Upsert in batches using Pinecone hosted embedding format
+            batch_size = 32  # Conservative batch size to avoid rate limits with hosted embeddings
+            total_batches = (len(records) - 1) // batch_size + 1
+            
+            print(f"🔄 Upserting {len(records)} documents to Pinecone in {total_batches} batches...")
+            
+            successful_batches = 0
+            for i in range(0, len(records), batch_size):
+                batch = records[i:i + batch_size]
+                batch_num = i // batch_size + 1
+                
+                try:
+                    # Use correct API format for hosted embeddings
+                    self.pinecone_index.upsert_records(namespace, batch)
+                    print(f"✅ Uploaded batch {batch_num}/{total_batches} ({len(batch)} records)")
+                    successful_batches += 1
+                    
+                    # Add delay to avoid rate limiting (increased for hosted embeddings)
+                    time.sleep(2.0)
+                    
+                except Exception as e:
+                    error_str = str(e)
+                    print(f"❌ Error uploading batch {batch_num}: {e}")
+                    
+                    # Handle rate limiting
+                    if "RESOURCE_EXHAUSTED" in error_str or "429" in error_str:
+                        print(f"⏳ Rate limit hit, waiting 30 seconds before retrying...")
+                        time.sleep(30)
+                        try:
+                            # Retry the batch
+                            self.pinecone_index.upsert_records(namespace, batch)
+                            print(f"✅ Uploaded batch {batch_num}/{total_batches} ({len(batch)} records) [Retry]")
+                            successful_batches += 1
+                            time.sleep(2.0)
+                        except Exception as retry_e:
+                            print(f"❌ Retry failed for batch {batch_num}: {retry_e}")
+                            continue
+                    # Handle metadata size issues
+                    elif "Metadata size" in error_str:
+                        print(f"   Batch contains records that are still too large")
+                        for j, record in enumerate(batch):
+                            record_size = sum(len(str(v).encode('utf-8')) for v in record.values())
+                            if record_size > 35000:
+                                print(f"   - Record {record['_id']}: {record_size} bytes")
+                        continue
+                    else:
+                        continue
+            
+            if successful_batches > 0:
+                print(f"✅ Successfully uploaded {successful_batches}/{total_batches} batches")
+                return True
+            else:
+                print("❌ No batches were successfully uploaded")
+                return False
+            
+        except Exception as e:
+            print(f"❌ Error upserting documents to Pinecone: {e}")
+            return False
+    
+    def upsert_knowledge_base_to_pinecone(self, knowledge_base_path: str = None, namespace: str = "__default__"):
+        """
+        Upload knowledge base entries to Pinecone using LangChain-compatible approach
+        This method converts JSON entries to LangChain Documents and uses the unified upsert method
+        """
+        if not knowledge_base_path:
+            knowledge_base_path = settings.KNOWLEDGE_BASE_FILE
+        
+        if not os.path.exists(knowledge_base_path):
+            print(f"❌ Knowledge base file not found: {knowledge_base_path}")
+            return False
+        
+        try:
+            # Load knowledge base
+            with open(knowledge_base_path, 'r', encoding='utf-8') as f:
+                knowledge_base = json.load(f)
+            
+            print(f"📚 Loaded {len(knowledge_base)} entries from knowledge base")
+            
+            # Convert JSON entries to LangChain Documents
+            documents = []
+            for entry in knowledge_base:
+                doc = Document(
+                    page_content=entry.get('content', ''),
+                    metadata={
+                        'id': entry.get('id', ''),
+                        'title': entry.get('title', ''),
+                        'source': entry.get('source', ''),
+                        'type': entry.get('type', 'unknown'),
+                        'authors': entry.get('authors', []),
+                        'categories': entry.get('categories', []),
+                        # Handle chunk-specific metadata for LLM chunking
+                        'chunk_index': entry.get('chunk_index'),
+                        'total_chunks': entry.get('total_chunks'),
+                        'parent_paper_id': entry.get('parent_paper_id')
+                    }
+                )
+                documents.append(doc)
+            
+            # Use unified upsert method
+            success = self.upsert_documents_to_pinecone(documents, namespace)
+            
+            if success:
+                # Get index stats
+                stats = self.pinecone_index.describe_index_stats()
+                total_vectors = stats.get('total_vector_count', 0)
+                
+                print(f"✅ Successfully uploaded knowledge base to Pinecone!")
+                print(f"📊 Total vectors in index: {total_vectors}")
+                print(f"📊 Namespace: {namespace}")
+                
+                return True
+            else:
+                print("❌ Failed to upload knowledge base to Pinecone")
+                return False
+                
+        except Exception as e:
+            print(f"❌ Error uploading knowledge base to Pinecone: {e}")
+            return False
     
     def _create_rag_tool(self):
         """Create RAG tool for knowledge retrieval using LangChain's PineconeVectorStore"""
