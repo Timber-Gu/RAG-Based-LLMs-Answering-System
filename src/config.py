@@ -17,7 +17,7 @@ class Settings(BaseModel):
     PINECONE_API_KEY: Optional[str] = os.getenv("PINECONE_API_KEY")
     
     # Multi-Model Agent Settings
-    RESEARCH_MODEL: str = "llama3.1"                  # Ollama model for research agent
+    RESEARCH_MODEL: str = os.getenv("RESEARCH_MODEL", "llama3.1") # Ollama model for research agent
     THEORY_MODEL: str = "gpt-4"                       # GPT-4 for theory agent  
     IMPLEMENTATION_MODEL: str = "claude-3-5-sonnet-20241022"  # Claude for implementation agent
     AGENT_TEMPERATURE: float = 0.7

@@ -522,14 +522,31 @@ class LangChainMLAgents:
         """Get list of available agents"""
         return list(self.agents.keys())
     
-    def health_check(self) -> Dict[str, bool]:
-        """Check system health"""
+    def health_check(self) -> Dict[str, Any]:
+        """Check system health and report agent models"""
         status = {
             'vector_store': self.vector_store is not None,
             'vector_store_type': settings.VECTOR_STORE_TYPE,
-            'agents_loaded': len(self.agents) > 0
+            'agents_loaded': len(self.agents) > 0,
+            'agent_models': {}
         }
-        
+
+        # Report model for each agent
+        if 'theory' in self.agents:
+            status['agent_models']['theory'] = getattr(self.theory_llm, 'model_name', getattr(self.theory_llm, 'model', 'unknown'))
+
+        if 'research' in self.agents:
+            model_name = getattr(self.research_llm, 'model', getattr(self.research_llm, 'model_name', 'unknown'))
+            if self.research_llm == self.theory_llm:
+                model_name += " (fallback)"
+            status['agent_models']['research'] = model_name
+
+        if 'implementation' in self.agents:
+            model_name = getattr(self.implementation_llm, 'model', getattr(self.implementation_llm, 'model_name', 'unknown'))
+            if self.implementation_llm == self.theory_llm:
+                model_name += " (fallback)"
+            status['agent_models']['implementation'] = model_name
+
         # Test GPT-4 connection (theory agent)
         try:
             response = self.theory_llm.invoke([HumanMessage(content="test")])
@@ -542,20 +559,22 @@ class LangChainMLAgents:
             try:
                 response = self.research_llm.invoke([HumanMessage(content="test")])
                 status['ollama_connection'] = bool(response.content)
-            except:
+            except Exception as e:
+                print(f"❌ Ollama connection test failed with an error: {e}")
                 status['ollama_connection'] = False
         else:
-            status['ollama_connection'] = False  # Not properly configured
+            status['ollama_connection'] = self.research_llm == self.theory_llm # True if fallback is active
             
         # Test Claude connection (implementation agent)
         if self.implementation_llm and self.implementation_llm != self.theory_llm:
             try:
                 response = self.implementation_llm.invoke([HumanMessage(content="test")])
                 status['claude_connection'] = bool(response.content)
-            except:
+            except Exception as e:
+                print(f"❌ Claude connection test failed with an error: {e}")
                 status['claude_connection'] = False
         else:
-            status['claude_connection'] = False  # Not properly configured
+            status['claude_connection'] = self.implementation_llm == self.theory_llm # True if fallback is active
             
         # Overall LLM health
         status['all_llms_configured'] = status['gpt4_connection'] and status['ollama_connection'] and status['claude_connection']
