@@ -98,6 +98,15 @@ A **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, p
    python main.py
    ```
 
+### Interactive Commands
+
+Once the system is running, you can use these commands:
+- `quit` - Exit the system
+- `agents` - Show available agents
+- `thinking on` - Enable thinking process display (default)
+- `thinking off` - Disable thinking process display
+- `thinking` - Check current thinking display status
+
 ### Environment Variables Explained
 
 #### Required Variables
@@ -194,6 +203,7 @@ Knowledge Base (ML/DL Papers & Content)
   - Step-by-step mathematical derivations
   - Structured problem decomposition
   - Intuitive explanations alongside formal proofs
+  - **Visible thinking process** - See how the agent reasons through problems
 - **Triggers**: `explain`, `theory`, `mathematical`, `algorithm`, `concept`
 - **Example**: *"Explain the mathematical foundations of neural networks"*
 - **CoT Structure**: Problem Understanding → Knowledge Retrieval → Step-by-Step Analysis → Intuitive Explanation → Key Takeaways
@@ -233,11 +243,36 @@ RAG-Based-LLMs-Answering-System/
 "Recent advances in computer vision models"
 ```
 
-### Theory Questions  
+### Theory Questions with Thinking Process
 ```
 "Explain backpropagation mathematically"
 "What is the mathematical foundation of neural networks?"
 "How does gradient descent work in deep learning?"
+```
+
+**Example with Thinking Process Display:**
+```
+🤔 Your question: Explain gradient descent mathematically
+
+🧠 Agent Thinking Process:
+========================================
+
+Step 1: 🔍 Searching knowledge base for: gradient descent mathematical
+   Result: Found relevant mathematical content about optimization...
+
+Step 2: 🧠 Applying Chain of Thoughts reasoning to: gradient descent
+   Result: Generated structured reasoning framework
+
+========================================
+
+💡 Final Response:
+🤔 Thinking Process: I'll explain gradient descent using a structured mathematical approach...
+
+📚 Knowledge Base Search: [searches for relevant mathematical content]
+
+🧠 Step-by-Step Analysis:
+Step 1: Problem Understanding - Gradient descent is an optimization algorithm...
+[Detailed mathematical explanation follows]
 ```
 
 ### Implementation Questions
@@ -255,6 +290,7 @@ RAG-Based-LLMs-Answering-System/
 - **Vector Store**: LangChain `PineconeVectorStore` with hosted embeddings
 - **Prompt Management**: Structured prompt templates for each agent
 - **Chain of Thoughts**: Advanced reasoning framework for Theory Agent with structured problem-solving
+- **Thinking Process Display**: Real-time visualization of agent reasoning steps and tool usage
 
 ### Pinecone Hosted Embeddings
 - **Automatic Embedding**: No local embedding models required

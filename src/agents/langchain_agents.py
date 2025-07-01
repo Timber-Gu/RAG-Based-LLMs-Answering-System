@@ -393,7 +393,8 @@ class LangChainMLAgents:
             agent=research_agent,
             tools=[rag_tool],
             verbose=True,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            return_intermediate_steps=True  # Enable intermediate steps capture
         )
         
         # Theory Agent with Chain of Thoughts
@@ -470,7 +471,8 @@ class LangChainMLAgents:
             agent=theory_agent,
             tools=[rag_tool, cot_tool],
             verbose=True,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            return_intermediate_steps=True  # Enable intermediate steps capture
         )
         
         # Implementation Agent
@@ -508,7 +510,8 @@ class LangChainMLAgents:
             agent=implementation_agent,
             tools=[rag_tool],
             verbose=True,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            return_intermediate_steps=True  # Enable intermediate steps capture
         )
         
         print("✅ LangChain agents initialized successfully")
@@ -569,8 +572,8 @@ class LangChainMLAgents:
         # Default to theory agent if no keywords match
         return 'theory'
     
-    def process_query(self, query: str, chat_history: List = None) -> Dict[str, Any]:
-        """Process query using appropriate LangChain agent"""
+    def process_query(self, query: str, chat_history: List = None, show_thinking: bool = True) -> Dict[str, Any]:
+        """Process query using appropriate LangChain agent with optional thinking process display"""
         if chat_history is None:
             chat_history = []
         
@@ -592,6 +595,11 @@ class LangChainMLAgents:
                 'chat_history': chat_history
             })
             
+            # Extract intermediate steps (thinking process)
+            thinking_steps = []
+            if show_thinking and 'intermediate_steps' in result:
+                thinking_steps = self._format_thinking_process(result['intermediate_steps'], agent_name)
+            
             # Standardize the response format from different agent types
             raw_response = result.get('output', '')
             
@@ -606,20 +614,61 @@ class LangChainMLAgents:
                 # Fallback for any other unexpected formats
                 final_response = str(raw_response)
 
-            return {
+            response_data = {
                 'query': query,
                 'agent_used': agent_name,
                 'response': final_response.strip(),
                 'success': True
             }
             
+            # Add thinking process if requested and available
+            if show_thinking and thinking_steps:
+                response_data['thinking_process'] = thinking_steps
+                response_data['has_thinking'] = True
+            else:
+                response_data['has_thinking'] = False
+            
+            return response_data
+            
         except Exception as e:
             return {
                 'error': f'Error processing query: {str(e)}',
                 'query': query,
                 'agent_used': agent_name,
-                'success': False
+                'success': False,
+                'has_thinking': False
             }
+    
+    def _format_thinking_process(self, intermediate_steps: List, agent_name: str) -> List[Dict[str, Any]]:
+        """Format the agent's thinking process for display"""
+        formatted_steps = []
+        
+        for i, (action, observation) in enumerate(intermediate_steps):
+            step_info = {
+                'step_number': i + 1,
+                'action_type': 'tool_call',
+                'tool_name': getattr(action, 'tool', 'unknown'),
+                'tool_input': getattr(action, 'tool_input', {}),
+                'observation': observation,
+                'timestamp': None  # Could add timestamp if needed
+            }
+            
+            # Format based on tool type
+            if step_info['tool_name'] == 'search_knowledge':
+                step_info['description'] = f"🔍 Searching knowledge base for: {step_info['tool_input']}"
+                step_info['result_summary'] = observation[:200] + "..." if len(observation) > 200 else observation
+                
+            elif step_info['tool_name'] == 'chain_of_thoughts_reasoning':
+                step_info['description'] = f"🧠 Applying Chain of Thoughts reasoning to: {step_info['tool_input']}"
+                step_info['result_summary'] = "Generated structured reasoning framework"
+                
+            else:
+                step_info['description'] = f"🔧 Using tool '{step_info['tool_name']}'"
+                step_info['result_summary'] = observation[:200] + "..." if len(observation) > 200 else observation
+            
+            formatted_steps.append(step_info)
+        
+        return formatted_steps
     
     def get_available_agents(self) -> List[str]:
         """Get list of available agents"""

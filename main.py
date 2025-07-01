@@ -44,7 +44,10 @@ def main():
     # Interactive loop
     print("\n💬 Interactive Q&A Mode")
     print("Type 'quit' to exit, 'agents' to see available agents")
+    print("Type 'thinking on/off' to toggle thinking process display")
     print("-" * 50)
+    
+    show_thinking = True  # Default to showing thinking process
     
     while True:
         try:
@@ -59,16 +62,38 @@ def main():
                 print(f"📋 Available agents: {', '.join(agents_info)}")
                 continue
             
+            if query.lower().startswith('thinking'):
+                if 'on' in query.lower():
+                    show_thinking = True
+                    print("🧠 Thinking process display: ON")
+                elif 'off' in query.lower():
+                    show_thinking = False
+                    print("🧠 Thinking process display: OFF")
+                else:
+                    print(f"🧠 Thinking process display: {'ON' if show_thinking else 'OFF'}")
+                continue
+            
             if not query:
                 print("⚠️ Please enter a question")
                 continue
             
             print(f"🔄 Processing query...")
-            result = agents.process_query(query)
+            result = agents.process_query(query, show_thinking=show_thinking)
             
             if result.get('success'):
                 print(f"🤖 Agent used: {result['agent_used']}")
-                print(f"💡 Response:\n{result['response']}")
+                
+                # Display thinking process if available and enabled
+                if show_thinking and result.get('has_thinking') and result.get('thinking_process'):
+                    print("\n🧠 Agent Thinking Process:")
+                    print("=" * 40)
+                    for step in result['thinking_process']:
+                        print(f"\nStep {step['step_number']}: {step['description']}")
+                        if step.get('result_summary'):
+                            print(f"   Result: {step['result_summary']}")
+                    print("=" * 40)
+                
+                print(f"\n💡 Final Response:\n{result['response']}")
             else:
                 print(f"❌ Error: {result.get('error', 'Unknown error')}")
         
