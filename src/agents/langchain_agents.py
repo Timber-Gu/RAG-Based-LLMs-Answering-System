@@ -448,18 +448,21 @@ class LangChainMLAgents:
                     
                     search_results = self.pinecone_index.search(query=query_payload, namespace="__default__")
                     
-                    if not search_results.get('matches'):
+                    # Handle the correct response format for hosted embeddings
+                    hits = search_results.get('result', {}).get('hits', [])
+                    if not hits:
                         return "No relevant information found in knowledge base"
                     
                     results = []
-                    for match in search_results['matches']:
-                        # Get metadata from top-level fields (correct format)
-                        title = match.get('title', 'Unknown')
-                        source = match.get('source', '')
+                    for hit in hits:
+                        # Get metadata from fields (correct format for hosted embeddings)
+                        fields = hit.get('fields', {})
+                        title = fields.get('title', 'Unknown')
+                        source = fields.get('source', '')
                         # Get a preview of the content
-                        text = match.get('text', '')
+                        text = fields.get('text', '')
                         content = text[:500] + "..." if len(text) > 500 else text
-                        score = match.get('score', 0)
+                        score = hit.get('_score', 0)
                         results.append(f"Source: {title} (Score: {score:.3f})\nContent: {content}")
                     
                     return "\n\n".join(results)

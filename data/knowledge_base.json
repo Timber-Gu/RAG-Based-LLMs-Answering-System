@@ -1226,5 +1226,43 @@
       "cs.AI"
     ],
     "type": "content"
+  },
+  {
+    "id": "2506.23225v1_abstract",
+    "title": "Masked Gated Linear Unit",
+    "content": "Title: Masked Gated Linear Unit\n\nAbstract: Gated Linear Units (GLUs) have become essential components in the feed-forward networks of state-of-the-art Large Language Models (LLMs). However, they require twice as many memory reads compared to feed-forward layers without gating, due to the use of separate weight matrices for the gate and value streams. To address this bottleneck, we introduce Masked Gated Linear Units (MGLUs), a novel family of GLUs with an efficient kernel implementation. The core contribution of MGLUs include: (1) the Mixture of Element-wise Gating (MoEG) architecture that learns multiple binary masks, each determining gate or value assignments at the element level on a single shared weight matrix resulting in reduced memory transfer, and (2) FlashMGLU, a hardware-friendly kernel that yields up to a 19.7× inference-time speed-up over a naïve PyTorch MGLU and is 47% more memory-efficient and 34% faster than standard GLUs despite added architectural complexity on an RTX5090 GPU. In LLM experiments, the Swish-activated variant SwiMGLU preserves its memory advantages while matching-or even surpassing-the downstream accuracy of the SwiGLU baseline.",
+    "source": "https://arxiv.org/pdf/2506.23225",
+    "authors": [
+      "Yukito Tajima",
+      "Nakamasa Inoue",
+      "Yusuke Sekikawa",
+      "Ikuro Sato",
+      "Rio Yokota"
+    ],
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.CL"
+    ],
+    "type": "abstract"
+  },
+  {
+    "id": "2506.23225v1_content",
+    "title": "Masked Gated Linear Unit",
+    "content": "# Masked Gated Linear Unit\n\nYukito Tajima, Nakamasa Inoue, Yusuke Sekikawa, Ikuro Sato, Rio Yokota\nInstitute of Science Tokyo, Japan; Denso IT Laboratory, Japan\n\n## Abstract\n\nGated Linear Units (GLUs) have become essential components in the feed-forward networks of state-of-the-art Large Language Models (LLMs). However, they require twice as many memory reads compared to feed-forward layers without gating, due to the use of separate weight matrices for the gate and value streams. To address this bottleneck, we introduce Masked Gated Linear Units (MGLUs), a novel family of GLUs with an efficient kernel implementation.\n\n## Key Contributions\n\n### 1. Mixture of Element-wise Gating (MoEG) Architecture\n- Learns multiple binary masks that determine gate or value assignments at the element level\n- Uses a single shared weight matrix instead of separate matrices for gate and value streams\n- Results in reduced memory transfer during inference\n\n### 2. FlashMGLU Kernel Implementation\n- Hardware-friendly CUDA kernel implementation\n- Achieves up to 19.7× inference-time speed-up over naïve PyTorch MGLU implementation\n- 47% more memory-efficient than standard GLUs\n- 34% faster than standard GLUs despite added architectural complexity\n- Tested on RTX5090 GPU with significant performance improvements\n\n### 3. SwiMGLU Variant\n- Swish-activated variant of MGLU\n- Preserves memory advantages while maintaining or exceeding accuracy\n- Matches or surpasses downstream accuracy of SwiGLU baseline in LLM experiments\n\n## Technical Details\n\n### Architecture Comparison\n- **Standard GLU**: Uses separate weight matrices W_g and W_v for gate and value streams\n- **MGLU (Single-mask variant)**: Uses single weight matrix W with learnable binary mask M to decompose into complementary projections\n- **Core mechanism**: Leverages complementary masks M̄_i = 1 - M_i for simultaneous gate and value computation\n\n### Performance Metrics\n- **Memory reduction**: 29.1% reduction in computational cost of projection layers\n- **Memory efficiency**: 37.5% reduction in memory usage during inference\n- **Speed improvement**: 12.51× faster than naïve PyTorch implementation\n- **Hardware optimization**: Custom CUDA and Triton kernels for optimal performance\n\n### Implementation Features\n- **FlashMGLU kernel**: Efficient CUDA implementation with vectorized operations\n- **Multiple mask support**: Architecture supports 1, 2, 4, or 8 masks for different complexity-performance trade-offs\n- **Complementary masking**: Simultaneous computation of gate x(M_i ⊙ W) and value x(M̄_i ⊙ W)\n- **Hardware-friendly design**: Optimized for modern GPU architectures\n\n## Applications and Impact\n\n### Large Language Models\n- Direct replacement for standard GLU layers in transformer architectures\n- Maintains model accuracy while significantly reducing memory footprint\n- Enables deployment on resource-constrained hardware\n- Particularly beneficial for inference-heavy applications\n\n### Efficiency Gains\n- **Inference optimization**: Substantial speed-ups during model inference\n- **Memory bandwidth**: Reduced pressure on memory subsystem\n- **Energy efficiency**: Lower computational requirements translate to reduced energy consumption\n- **Scalability**: Benefits increase with model size and deployment scale\n\n## Experimental Results\n\n### Benchmark Performance\n- Comprehensive evaluation on various LLM architectures\n- Comparison against standard SwiGLU implementations\n- Performance validation across different model sizes\n- Hardware benchmarking on RTX5090 and H100 GPUs\n\n### Key Findings\n- MGLUs maintain competitive accuracy while providing substantial efficiency gains\n- FlashMGLU kernel significantly outperforms both naive implementations and standard GLUs\n- Memory efficiency improvements are consistent across different model configurations\n- Performance benefits scale with the number of masks used in the architecture\n\n## Technical Innovation\n\n### Masked Gating Mechanism\nThe core innovation lies in replacing separate weight matrices with a single shared matrix and learnable binary masks. This approach:\n- Reduces memory bandwidth requirements\n- Enables efficient vectorized operations\n- Maintains the expressiveness of traditional GLU architectures\n- Allows for hardware-optimized implementations\n\n### Kernel Optimization\nFlashMGLU represents a significant advancement in GPU kernel optimization for neural network operations:\n- Custom CUDA implementation with attention to memory access patterns\n- Vectorized operations using half-precision arithmetic\n- Efficient handling of binary mask operations\n- Optimized for both training and inference scenarios\n\nThis work demonstrates how architectural innovations combined with careful hardware optimization can achieve substantial improvements in both efficiency and performance for large language models, making them more accessible and practical for deployment in resource-constrained environments.",
+    "source": "https://arxiv.org/pdf/2506.23225",
+    "authors": [
+      "Yukito Tajima",
+      "Nakamasa Inoue",
+      "Yusuke Sekikawa",
+      "Ikuro Sato",
+      "Rio Yokota"
+    ],
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "cs.CL"
+    ],
+    "type": "content"
   }
 ]
