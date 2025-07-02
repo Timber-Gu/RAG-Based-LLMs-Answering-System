@@ -1,11 +1,11 @@
-# Multi-Model LangChain ML Q&A Assistant with Pinecone Hosted Embeddings
+# Multi-Model LangChain ML Q&A Assistant
 
-A **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, powered by different specialized LLMs and **Pinecone's hosted embeddings**:
+A **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, powered by different specialized LLMs:
 
 - **Research Agent**: Ollama (Llama 3.1) - For literature reviews and research findings
 - **Theory Agent**: GPT-4 - For mathematical explanations and theory
 - **Implementation Agent**: Claude 3.5 Sonnet - For code generation and practical examples
-- **Knowledge Base**: Pinecone with hosted `llama-text-embed-v2` - For semantic search
+- **Knowledge Base**: Pinecone vector store for semantic search
 
 ## 🚀 Key Features
 
@@ -15,11 +15,11 @@ A **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, p
 - **RAG Integration**: Seamless knowledge retrieval using LangChain tools
 - **Chat History Support**: Conversation context management
 
-### Pinecone Hosted Embeddings
-- **No Local Setup Required**: Uses Pinecone's hosted `llama-text-embed-v2` model
-- **High Performance**: 1024-dimensional vectors with optimized search
-- **Automatic Embedding**: Text is automatically embedded during upsert and search
-- **Scalable**: Cloud-native vector storage and retrieval
+### Vector Store Integration
+- **Pinecone Integration**: Scalable vector storage and retrieval
+- **Flexible Embedding**: Compatible with various embedding models
+- **Efficient Search**: Fast similarity search for relevant content
+- **Metadata Support**: Rich metadata for better context preservation
 
 ### Specialized Agents
 - **Smart Routing**: Automatic agent selection based on query type
@@ -60,7 +60,7 @@ A **RAG-based multi-agent system** for Machine Learning and Deep Learning Q&A, p
    PINECONE_INDEX_NAME=myproject          # Create this index in Pinecone first
    PINECONE_ENVIRONMENT=your_environment  # e.g., us-east-1
    PINECONE_API_KEY=your_pinecone_api_key
-   EMBEDDING_MODEL=llama-text-embed-v2
+   EMBEDDING_MODEL=your_chosen_embedding_model
    
    # Model Settings (Optional - these are default values)
    AGENT_TEMPERATURE=0.7
@@ -165,7 +165,7 @@ PINECONE_API_KEY=your_pinecone_api_key_here
 # Pinecone Configuration
 PINECONE_INDEX_NAME=myproject
 VECTOR_STORE_TYPE=pinecone
-EMBEDDING_MODEL=llama-text-embed-v2
+EMBEDDING_MODEL=your_chosen_embedding_model
 
 # Model Configuration
 THEORY_MODEL=gpt-4
@@ -196,7 +196,7 @@ LangChain Router
     ↓
 RAG Tool (LangChain + Pinecone)
     ↓
-Pinecone Vector Store (Hosted llama-text-embed-v2)
+Pinecone Vector Store
     ↓
 Knowledge Base (ML/DL Papers & Content)
 ```
