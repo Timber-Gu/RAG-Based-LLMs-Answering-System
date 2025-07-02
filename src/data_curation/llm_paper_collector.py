@@ -957,14 +957,21 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='LLM Paper Collector - Comprehensive Research Paper Database')
     parser.add_argument('--max-papers', type=int, default=100, help='Maximum number of papers to collect (default: 100)')
-    parser.add_argument('--use-llm-chunking', action='store_true', default=True, help='Use LLM for semantic chunking (default: True)')
+    parser.add_argument('--use-llm-chunking', action='store_true', help='Enable LLM for semantic chunking')
+    parser.add_argument('--no-llm-chunking', action='store_true', help='Disable LLM semantic chunking (faster collection)')
     parser.add_argument('--verbose', action='store_true', help='Enable verbose output')
     
     args = parser.parse_args()
     
     # Override settings with command line arguments
     settings.MAX_PAPERS = args.max_papers
-    settings.USE_LLM_CHUNKING = args.use_llm_chunking
+    
+    # Handle LLM chunking logic (default to True unless explicitly disabled)
+    if args.no_llm_chunking:
+        settings.USE_LLM_CHUNKING = False
+    elif args.use_llm_chunking:
+        settings.USE_LLM_CHUNKING = True
+    # If neither flag is provided, keep the default from settings (True)
     
     print("📚 LLM Paper Collector - Comprehensive Database Builder")
     print("=" * 60)
