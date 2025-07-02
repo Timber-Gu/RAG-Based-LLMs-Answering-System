@@ -198,53 +198,302 @@ If no good split points exist, return "NO_SPLIT".
         
         return chunk_entries
 
-# LLM-related search queries
+# LLM-related search queries - Expanded for comprehensive coverage
 LLM_SEARCH_QUERIES = [
+    # Core LLM Architectures
     "large language models",
-    "transformer architectures",
+    "transformer architectures", 
     "attention mechanisms",
+    "self-attention",
+    "multi-head attention",
+    "cross-attention",
+    "flash attention",
+    "sparse attention",
+    "local attention",
+    "sliding window attention",
+    "rotary positional encoding",
+    "positional embeddings",
+    
+    # Popular LLM Models
+    "gpt models",
+    "gpt-4",
+    "gpt-3.5",
     "llama model",
-    "gpt architecture",
+    "llama2",
+    "llama3",
     "claude ai",
+    "claude 3",
     "mistral ai",
+    "mixtral",
+    "gemini model",
+    "palm model",
+    "bert model",
+    "t5 model",
+    "bart model",
+    "pegasus model",
+    "electra model",
+    "roberta model",
+    "deberta model",
+    "albert model",
+    
+    # Training Techniques
+    "pre-training language models",
+    "instruction tuning",
+    "fine-tuning llm",
+    "parameter efficient fine-tuning",
+    "low-rank adaptation",
+    "lora",
+    "qlora",
+    "adapter layers",
+    "prefix tuning",
+    "prompt tuning",
+    "p-tuning",
+    "delta tuning",
+    "bitfit",
+    "compacter",
+    
+    # Alignment and Safety
+    "reinforcement learning from human feedback",
+    "rlhf",
+    "constitutional ai",
+    "direct preference optimization",
+    "dpo",
+    "proximal policy optimization",
+    "reward modeling",
+    "human preference learning",
+    "ai alignment",
+    "ai safety",
+    "harmless ai",
+    "truthful ai",
+    "red teaming llm",
+    "adversarial prompts",
+    "jailbreaking llm",
+    
+    # Prompting and In-Context Learning
     "prompt engineering",
     "in-context learning",
+    "few-shot learning",
+    "zero-shot learning",
     "chain-of-thought",
-    "self-attention",
+    "tree of thought",
+    "step-by-step reasoning",
+    "chain-of-thought prompting",
+    "instruction following",
+    "prompt optimization",
+    "automatic prompt generation",
+    "soft prompts",
+    "discrete prompts",
+    
+    # Retrieval and Knowledge
     "retrieval augmented generation",
-    "instruction tuning",
-    "constitutional ai",
-    "alignment techniques",
-    "language model evaluation",
-    "inference optimization",
-    "quantization methods",
-    "parameter efficient fine-tuning",
-    "foundation models",
+    "rag",
+    "knowledge grounding",
+    "external memory",
+    "vector databases",
+    "semantic search",
+    "dense retrieval",
+    "knowledge injection",
+    "fact checking llm",
+    "knowledge editing",
+    "memory augmented llm",
+    
+    # Multimodal and Specialized Models
     "multimodal llm",
     "vision language models",
-    "llm reasoning",
-    "tokenization techniques",
-    "transformer scaling",
-    "sparse attention",
-    "mixture of experts",
-    "distillation llm",
-    "language model alignment",
-    "efficient transformers",
-    "token merging",
-    "neural scaling laws",
-    "llm interpretability",
-    "emergent abilities",
-    "context window extension",
-    "rotary positional encoding",
-    "flash attention algorithm",
-    "chatbot architecture",
-    "agent llm systems",
-    "language model safety",
-    "llm evaluation benchmarks",
-    "multilingual language models",
+    "vlm",
+    "text-to-image generation",
+    "image-to-text generation",
+    "clip model",
+    "dalle",
+    "stable diffusion",
+    "midjourney",
+    "flamingo model",
+    "blip model",
+    "instructblip",
+    "llava model",
+    "gpt-4v",
     "code generation models",
-    "sequence modeling",
-    "transformer optimization"
+    "codex",
+    "github copilot",
+    "code llama",
+    "starcoder",
+    "codegen",
+    
+    # Efficiency and Optimization
+    "llm inference optimization",
+    "model compression",
+    "quantization methods",
+    "pruning llm",
+    "knowledge distillation",
+    "efficient transformers",
+    "linear attention",
+    "approximate attention",
+    "low-rank approximation",
+    "mixture of experts",
+    "moe",
+    "switch transformer",
+    "glam model",
+    "palm-2",
+    
+    # Scaling and Architecture
+    "transformer scaling",
+    "neural scaling laws",
+    "emergent abilities",
+    "scaling laws llm",
+    "chinchilla scaling",
+    "compute optimal training",
+    "model parallelism",
+    "pipeline parallelism",
+    "tensor parallelism",
+    "gradient accumulation",
+    "mixed precision training",
+    "bf16 training",
+    "fp16 training",
+    
+    # Context and Memory
+    "long context llm",
+    "context window extension",
+    "longformer",
+    "big bird model",
+    "linformer",
+    "performer model",
+    "synthesizer model",
+    "memory efficient attention",
+    "gradient checkpointing",
+    "activation recomputation",
+    
+    # Training Infrastructure
+    "distributed training llm",
+    "federated learning llm",
+    "continual learning llm",
+    "catastrophic forgetting",
+    "elastic weight consolidation",
+    "progressive networks",
+    "meta-learning llm",
+    "transfer learning nlp",
+    
+    # Evaluation and Benchmarks
+    "llm evaluation",
+    "language model benchmarks",
+    "glue benchmark",
+    "superglue benchmark",
+    "big-bench",
+    "mmlu benchmark",
+    "hellaswag",
+    "arc benchmark",
+    "truthfulqa",
+    "gsm8k",
+    "humaneval",
+    "code evaluation",
+    "reasoning evaluation",
+    "common sense reasoning",
+    
+    # Interpretability and Analysis
+    "llm interpretability",
+    "attention visualization",
+    "probing llm",
+    "mechanistic interpretability",
+    "concept bottleneck models",
+    "feature attribution",
+    "gradient-based explanations",
+    "lime explanations",
+    "shap explanations",
+    "adversarial examples nlp",
+    
+    # Applications and Domains
+    "conversational ai",
+    "chatbot architecture",
+    "dialogue systems",
+    "question answering",
+    "text summarization",
+    "machine translation",
+    "sentiment analysis",
+    "named entity recognition",
+    "information extraction",
+    "text classification",
+    "natural language inference",
+    "reading comprehension",
+    "story generation",
+    "creative writing ai",
+    "scientific writing ai",
+    "code documentation",
+    "code explanation",
+    "automated debugging",
+    
+    # Advanced Techniques
+    "gradient-free optimization",
+    "evolutionary strategies llm",
+    "genetic algorithms nlp",
+    "neural architecture search",
+    "automl nlp",
+    "hyperparameter optimization",
+    "early stopping",
+    "learning rate scheduling",
+    "optimizer comparison",
+    "adam optimizer",
+    "adamw optimizer",
+    "rmsprop optimizer",
+    
+    # Tokenization and Preprocessing
+    "tokenization techniques",
+    "subword tokenization",
+    "byte-pair encoding",
+    "sentencepiece",
+    "wordpiece",
+    "unigram tokenization",
+    "character-level models",
+    "token merging",
+    "vocabulary optimization",
+    "multilingual tokenization",
+    
+    # Multilingual and Cross-lingual
+    "multilingual language models",
+    "cross-lingual transfer",
+    "zero-shot cross-lingual",
+    "language-agnostic models",
+    "xlm model",
+    "xlm-r",
+    "mbert",
+    "language adaptation",
+    "code-switching nlp",
+    
+    # Domain-Specific Applications
+    "biomedical llm",
+    "legal llm",
+    "financial llm",
+    "scientific llm",
+    "mathematical reasoning",
+    "logical reasoning",
+    "commonsense reasoning",
+    "spatial reasoning",
+    "temporal reasoning",
+    "causal reasoning",
+    
+    # Recent Innovations
+    "mixture of depths",
+    "mamba model",
+    "state space models",
+    "selective state spaces",
+    "structured state spaces",
+    "liquid neural networks",
+    "neural ode",
+    "continuous time models",
+    "diffusion language models",
+    "score-based generative models",
+    "flow-based models",
+    "autoregressive flows",
+    
+    # Agent Systems
+    "llm agents",
+    "autonomous agents",
+    "tool-using llm",
+    "function calling",
+    "api integration llm",
+    "planning with llm",
+    "reasoning agents",
+    "multi-agent systems",
+    "collaborative ai",
+    "swarm intelligence nlp"
 ]
 
 # Key LLM concepts and algorithms
@@ -544,40 +793,49 @@ def update_knowledge_base():
             knowledge_base.append(entry)
             existing_ids.add(entry['id'])
     
-    # Fetch papers for each query
+    # Fetch papers for each query with comprehensive coverage strategy
     new_papers_count = 0
+    total_queries = len(LLM_SEARCH_QUERIES)
     
-    # First pass: use high max_results for most important topics
-    top_queries = [
-        "large language models",
-        "transformer architectures",
-        "attention mechanisms",
-        "llama model",
-        "gpt architecture",
-        "prompt engineering",
-        "in-context learning",
-        "retrieval augmented generation",
-        "instruction tuning",
-        "parameter efficient fine-tuning",
-        "foundation models"
+    print(f"🔍 Starting comprehensive paper collection across {total_queries} research areas...")
+    
+    # Dynamically adjust papers per query based on total target
+    papers_per_query = max(1, settings.MAX_PAPERS // (total_queries // 3))  # Distribute papers across queries
+    
+    # Organize queries by priority for optimal coverage
+    high_priority_queries = [
+        "large language models", "transformer architectures", "attention mechanisms",
+        "gpt models", "llama model", "claude ai", "mistral ai", "retrieval augmented generation",
+        "instruction tuning", "parameter efficient fine-tuning", "rlhf", "constitutional ai",
+        "prompt engineering", "in-context learning", "chain-of-thought", "multimodal llm"
     ]
     
-    for query in top_queries:
+    medium_priority_queries = [
+        "quantization methods", "knowledge distillation", "mixture of experts", 
+        "flash attention", "long context llm", "code generation models", "llm evaluation",
+        "neural scaling laws", "emergent abilities", "llm interpretability"
+    ]
+    
+    # Process high priority queries first
+    for i, query in enumerate(high_priority_queries):
         if new_papers_count >= settings.MAX_PAPERS:
             break
             
-        print(f"Searching for papers on: {query} (priority query)")
-        papers = get_arxiv_papers(query, max_results=10)  # Increase max_results for important topics
+        print(f"🎯 [{i+1}/{len(high_priority_queries)}] High Priority: {query}")
+        papers = get_arxiv_papers(query, max_results=papers_per_query + 5)  # Extra papers for high priority
         
+        query_papers_added = 0
         for paper in papers:
+            if new_papers_count >= settings.MAX_PAPERS:
+                break
+                
             arxiv_id = paper.get_short_id()
             
             # Skip if already processed
             if arxiv_id in existing_arxiv_ids:
-                print(f"Skipping already processed paper: {arxiv_id}")
                 continue
             
-            print(f"Processing paper: {paper.title} ({arxiv_id})")
+            print(f"  ✅ Processing: {paper.title[:80]}...")
             
             # Process paper with LLM chunking if enabled
             metadata, entries = process_paper(paper, use_llm_chunking=settings.USE_LLM_CHUNKING)
@@ -592,39 +850,35 @@ def update_knowledge_base():
                     existing_ids.add(entry['id'])
             
             new_papers_count += 1
+            query_papers_added += 1
             
             # Add delay to avoid rate limiting
-            time.sleep(random.uniform(1, 2))
-            
-            # Limit total number of new papers
-            if new_papers_count >= settings.MAX_PAPERS:
-                print(f"Reached maximum number of papers ({settings.MAX_PAPERS})")
-                break
+            time.sleep(random.uniform(0.5, 1.5))
+        
+        print(f"    📊 Added {query_papers_added} papers from this query")
     
-    # Second pass: use lower max_results for remaining topics
-    remaining_queries = [q for q in LLM_SEARCH_QUERIES if q not in top_queries]
-    
-    for query in remaining_queries:
+    # Process medium priority queries
+    for i, query in enumerate(medium_priority_queries):
         if new_papers_count >= settings.MAX_PAPERS:
             break
             
-        print(f"Searching for papers on: {query}")
-        papers = get_arxiv_papers(query, max_results=5)  # Lower max_results for less important topics
+        print(f"📋 [{i+1}/{len(medium_priority_queries)}] Medium Priority: {query}")
+        papers = get_arxiv_papers(query, max_results=papers_per_query)
         
+        query_papers_added = 0
         for paper in papers:
+            if new_papers_count >= settings.MAX_PAPERS:
+                break
+                
             arxiv_id = paper.get_short_id()
             
-            # Skip if already processed
             if arxiv_id in existing_arxiv_ids:
-                print(f"Skipping already processed paper: {arxiv_id}")
                 continue
             
-            print(f"Processing paper: {paper.title} ({arxiv_id})")
+            print(f"  ✅ Processing: {paper.title[:80]}...")
             
-            # Process paper with LLM chunking if enabled
             metadata, entries = process_paper(paper, use_llm_chunking=settings.USE_LLM_CHUNKING)
             
-            # Add to collections
             papers_metadata.append(metadata)
             existing_arxiv_ids.add(arxiv_id)
             
@@ -634,14 +888,57 @@ def update_knowledge_base():
                     existing_ids.add(entry['id'])
             
             new_papers_count += 1
+            query_papers_added += 1
             
-            # Add delay to avoid rate limiting
-            time.sleep(random.uniform(1, 2))
+            time.sleep(random.uniform(0.5, 1.5))
+        
+        print(f"    📊 Added {query_papers_added} papers from this query")
+    
+    # Process remaining queries with lower priority
+    remaining_queries = [q for q in LLM_SEARCH_QUERIES if q not in high_priority_queries + medium_priority_queries]
+    
+    for i, query in enumerate(remaining_queries):
+        if new_papers_count >= settings.MAX_PAPERS:
+            break
             
-            # Limit total number of new papers
+        print(f"📄 [{i+1}/{len(remaining_queries)}] Comprehensive Coverage: {query}")
+        papers = get_arxiv_papers(query, max_results=max(2, papers_per_query // 2))  # Fewer papers for remaining queries
+        
+        query_papers_added = 0
+        for paper in papers:
             if new_papers_count >= settings.MAX_PAPERS:
-                print(f"Reached maximum number of papers ({settings.MAX_PAPERS})")
                 break
+                
+            arxiv_id = paper.get_short_id()
+            
+            if arxiv_id in existing_arxiv_ids:
+                continue
+            
+            print(f"  ✅ Processing: {paper.title[:80]}...")
+            
+            metadata, entries = process_paper(paper, use_llm_chunking=settings.USE_LLM_CHUNKING)
+            
+            papers_metadata.append(metadata)
+            existing_arxiv_ids.add(arxiv_id)
+            
+            for entry in entries:
+                if entry['id'] not in existing_ids:
+                    knowledge_base.append(entry)
+                    existing_ids.add(entry['id'])
+            
+            new_papers_count += 1
+            query_papers_added += 1
+            
+            time.sleep(random.uniform(0.5, 1.5))
+        
+        if query_papers_added > 0:
+            print(f"    📊 Added {query_papers_added} papers from this query")
+    
+    print(f"\n🎉 Collection Summary:")
+    print(f"   📄 Total new papers processed: {new_papers_count}")
+    print(f"   🔍 Total queries executed: {min(len(LLM_SEARCH_QUERIES), new_papers_count)}")
+    print(f"   📚 Total knowledge base entries: {len(knowledge_base)}")
+    print(f"   📋 Total paper metadata records: {len(papers_metadata)}")
     
     # Save updated knowledge base
     with open(settings.KNOWLEDGE_BASE_FILE, 'w', encoding='utf-8') as f:
@@ -653,36 +950,32 @@ def update_knowledge_base():
         json.dump(papers_metadata, f, indent=2, ensure_ascii=False)
     print(f"Saved metadata for {len(papers_metadata)} papers")
 
-def upload_to_pinecone():
-    """
-    Upload knowledge base to Pinecone using LangChain-compatible approach
-    This function now uses the unified LangChain agents upserting method
-    """
-    try:
-        # Import the LangChain agents class
-        from ..agents.langchain_agents import LangChainMLAgents
-        
-        print("🔄 Initializing LangChain agents for Pinecone upload...")
-        
-        # Create a minimal agent instance just for the Pinecone functionality
-        # We don't need the full agent setup, just the Pinecone integration
-        agents = LangChainMLAgents()
-        
-        # Use the unified upsert method
-        success = agents.upsert_knowledge_base_to_pinecone()
-        
-        return success
-        
-    except Exception as e:
-        print(f"❌ Error uploading to Pinecone: {e}")
-        return False
+
 
 if __name__ == "__main__":
-    print("📚 LLM Paper Collector")
-    print("=" * 50)
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='LLM Paper Collector - Comprehensive Research Paper Database')
+    parser.add_argument('--max-papers', type=int, default=100, help='Maximum number of papers to collect (default: 100)')
+    parser.add_argument('--use-llm-chunking', action='store_true', default=True, help='Use LLM for semantic chunking (default: True)')
+    parser.add_argument('--verbose', action='store_true', help='Enable verbose output')
+    
+    args = parser.parse_args()
+    
+    # Override settings with command line arguments
+    settings.MAX_PAPERS = args.max_papers
+    settings.USE_LLM_CHUNKING = args.use_llm_chunking
+    
+    print("📚 LLM Paper Collector - Comprehensive Database Builder")
+    print("=" * 60)
+    print(f"🎯 Target papers: {settings.MAX_PAPERS}")
+    print(f"🧠 LLM chunking: {'Enabled' if settings.USE_LLM_CHUNKING else 'Disabled'}")
+    print(f"🔍 Search queries: {len(LLM_SEARCH_QUERIES)} topics")
+    print("=" * 60)
     
     # Update knowledge base
     update_knowledge_base()
     
-    print("\n✅ Knowledge base updated successfully")
-    print("To use this data with Pinecone, run the main application") 
+    print("\n✅ Knowledge base updated successfully!")
+    print(f"📊 Database contains comprehensive coverage of {len(LLM_SEARCH_QUERIES)} LLM research areas")
+    print("🚀 Ready for semantic search and retrieval!") 
