@@ -62,6 +62,13 @@ class LangChainMLAgents:
         self.chat_history = []  # List of HumanMessage and AIMessage objects
         self.max_history_length = 20  # Maximum number of messages to keep in memory
         
+        # Initialize routing LLM for semantic query analysis (cheap but effective)
+        self.routing_llm = ChatOpenAI(
+            model="gpt-4o-mini",  # Very cheap and fast for classification tasks
+            temperature=0.0,  # Low temperature for consistent routing decisions
+            openai_api_key=settings.OPENAI_API_KEY
+        )
+        
         # Initialize multiple LLMs for different agents
         
         # GPT-4 for theory agent
@@ -749,8 +756,72 @@ class LangChainMLAgents:
         
         print("✅ LangChain agents initialized successfully")
     
-    def route_query(self, query: str) -> str:
-        """Simple routing logic to determine best agent"""
+    def _semantic_route_query(self, query: str) -> str:
+        """
+        Use LLM to semantically analyze query intention and route to appropriate agent
+        
+        Args:
+            query: User question to analyze
+            
+        Returns:
+            Agent name (research, theory, implementation) or None if routing fails
+        """
+        try:
+            # Structured prompt for query classification
+            routing_prompt = f"""You are an AI assistant that analyzes user queries and determines which type of expert should handle them.
+
+Available Expert Agents:
+1. RESEARCH - For literature review, paper analysis, recent developments, surveys, comparisons
+2. THEORY - For mathematical explanations, conceptual understanding, algorithmic details, theoretical foundations  
+3. IMPLEMENTATION - For coding, practical examples, debugging, tutorials, how-to guides
+
+Query to analyze: "{query}"
+
+Based on the query's semantic meaning and intent, classify it into ONE of these categories:
+
+Analysis Framework:
+- If the query asks about papers, research, recent developments, literature, studies, surveys, or comparisons → RESEARCH
+- If the query asks for mathematical explanations, theoretical concepts, algorithmic details, or conceptual understanding → THEORY  
+- If the query asks for code, implementation, examples, tutorials, debugging, or practical guidance → IMPLEMENTATION
+
+Respond with ONLY the single word: RESEARCH, THEORY, or IMPLEMENTATION
+
+Classification:"""
+
+            # Get routing decision from LLM
+            routing_messages = [HumanMessage(content=routing_prompt)]
+            response = self.routing_llm.invoke(routing_messages)
+            
+            # Extract and validate response
+            routing_decision = response.content.strip().upper()
+            
+            # Map to agent names
+            agent_mapping = {
+                'RESEARCH': 'research',
+                'THEORY': 'theory', 
+                'IMPLEMENTATION': 'implementation'
+            }
+            
+            if routing_decision in agent_mapping:
+                return agent_mapping[routing_decision]
+            else:
+                print(f"⚠️ Semantic routing returned unexpected response: {routing_decision}")
+                return None
+                
+        except Exception as e:
+            print(f"⚠️ Semantic routing failed: {e}")
+            return None
+    
+    def _keyword_route_query(self, query: str) -> str:
+        """
+        Fallback keyword-based routing logic (original implementation)
+        
+        Args:
+            query: User question to analyze
+            
+        Returns:
+            Agent name based on keyword matching
+        """
         query_lower = query.lower()
 
         # Implementation keywords - expanded for broader coverage
@@ -804,6 +875,28 @@ class LangChainMLAgents:
 
         # Default to theory agent if no keywords match
         return 'theory'
+    
+    def route_query(self, query: str) -> str:
+        """
+        Smart routing logic using semantic analysis with fallback to keyword matching
+        
+        Args:
+            query: User question to analyze
+            
+        Returns:
+            Agent name (research, theory, implementation) 
+        """
+        # Try semantic routing first using LLM
+        semantic_result = self._semantic_route_query(query)
+        
+        if semantic_result:
+            print(f"🧠 Semantic routing: {query[:50]}... → {semantic_result}")
+            return semantic_result
+        
+        # Fallback to keyword-based routing
+        keyword_result = self._keyword_route_query(query)
+        print(f"🔤 Keyword routing (fallback): {query[:50]}... → {keyword_result}")
+        return keyword_result
     
     def process_query(self, query: str, chat_history: List = None, show_thinking: bool = True) -> Dict[str, Any]:
         """
@@ -948,6 +1041,9 @@ class LangChainMLAgents:
             if self.implementation_llm == self.theory_llm:
                 model_name += " (fallback)"
             status['agent_models']['implementation'] = model_name
+        
+        # Report routing LLM
+        status['agent_models']['routing'] = getattr(self.routing_llm, 'model_name', getattr(self.routing_llm, 'model', 'unknown'))
 
         # Test GPT-4 connection (theory agent)
         try:
@@ -955,6 +1051,13 @@ class LangChainMLAgents:
             status['gpt4_connection'] = bool(response.content)
         except:
             status['gpt4_connection'] = False
+        
+        # Test routing LLM connection (GPT-4o-mini)
+        try:
+            response = self.routing_llm.invoke([HumanMessage(content="test")])
+            status['routing_llm_connection'] = bool(response.content)
+        except:
+            status['routing_llm_connection'] = False
         
         # Test Ollama connection (research agent)
         if self.research_llm and self.research_llm != self.theory_llm:
