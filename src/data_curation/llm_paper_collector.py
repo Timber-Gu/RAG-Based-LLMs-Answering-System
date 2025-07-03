@@ -25,6 +25,14 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain.schema import Document
 
+# Import Ollama for Llama models
+try:
+    from langchain_ollama import ChatOllama
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    OLLAMA_AVAILABLE = False
+    print("⚠️  Ollama not installed. Install with: pip install langchain-ollama ollama")
+
 class LLMSemanticChunker:
     """
     LLM-based semantic text chunker that intelligently splits documents
@@ -37,14 +45,37 @@ class LLMSemanticChunker:
         
         Args:
             llm_model: The LLM model to use for semantic analysis
+                      OpenAI models: "gpt-3.5-turbo", "gpt-4", etc.
+                      Ollama models: "llama3.2", "llama3.1", "codellama", etc.
             max_chunk_size: Maximum size of each chunk in characters
         """
-        self.llm = ChatOpenAI(
-            model=llm_model,
-            temperature=0,  # Use deterministic output for consistent chunking
-            openai_api_key=settings.OPENAI_API_KEY
-        )
+        self.model_name = llm_model
         self.max_chunk_size = max_chunk_size
+        
+        # Check if this is an Ollama model (common Llama model names)
+        ollama_models = [
+            "llama3.2", "llama3.1", "llama3", "llama2", 
+            "codellama", "wizardlm", "vicuna", "orca",
+            "mistral", "mixtral", "phi", "gemma"
+        ]
+        
+        is_ollama = any(model in llm_model.lower() for model in ollama_models)
+        
+        if is_ollama and OLLAMA_AVAILABLE:
+            print(f"🦙 Using Ollama model: {llm_model}")
+            self.llm = ChatOllama(
+                model=llm_model,
+                temperature=0,  # Use deterministic output for consistent chunking
+            )
+        else:
+            print(f"🤖 Using OpenAI model: {llm_model}")
+            if not settings.OPENAI_API_KEY:
+                raise ValueError("OpenAI API key required for OpenAI models. Set OPENAI_API_KEY environment variable.")
+            self.llm = ChatOpenAI(
+                model=llm_model,
+                temperature=0,  # Use deterministic output for consistent chunking
+                openai_api_key=settings.OPENAI_API_KEY
+            )
         
         # Fallback to traditional chunking if LLM fails
         self.fallback_splitter = RecursiveCharacterTextSplitter(
@@ -940,15 +971,28 @@ def update_knowledge_base():
     print(f"   📚 Total knowledge base entries: {len(knowledge_base)}")
     print(f"   📋 Total paper metadata records: {len(papers_metadata)}")
     
-    # Save updated knowledge base
-    with open(settings.KNOWLEDGE_BASE_FILE, 'w', encoding='utf-8') as f:
-        json.dump(knowledge_base, f, indent=2, ensure_ascii=False)
-    print(f"Saved {len(knowledge_base)} entries to knowledge base")
+    # Save updated knowledge base with proper Unicode handling
+    try:
+        with open(settings.KNOWLEDGE_BASE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(knowledge_base, f, indent=2, ensure_ascii=True)  # Use ensure_ascii=True to avoid Unicode issues
+        print(f"Saved {len(knowledge_base)} entries to knowledge base")
+    except UnicodeEncodeError as e:
+        print(f"Unicode error when saving knowledge base: {e}")
+        # Try with ASCII encoding as fallback
+        with open(settings.KNOWLEDGE_BASE_FILE, 'w', encoding='ascii', errors='ignore') as f:
+            json.dump(knowledge_base, f, indent=2, ensure_ascii=True)
+        print(f"Saved {len(knowledge_base)} entries to knowledge base (with Unicode fallback)")
     
-    # Save updated papers metadata
-    with open(os.path.join(settings.DATA_DIR, 'papers_metadata.json'), 'w', encoding='utf-8') as f:
-        json.dump(papers_metadata, f, indent=2, ensure_ascii=False)
-    print(f"Saved metadata for {len(papers_metadata)} papers")
+    # Save updated papers metadata with proper Unicode handling
+    try:
+        with open(os.path.join(settings.DATA_DIR, 'papers_metadata.json'), 'w', encoding='utf-8') as f:
+            json.dump(papers_metadata, f, indent=2, ensure_ascii=True)
+        print(f"Saved metadata for {len(papers_metadata)} papers")
+    except UnicodeEncodeError as e:
+        print(f"Unicode error when saving metadata: {e}")
+        with open(os.path.join(settings.DATA_DIR, 'papers_metadata.json'), 'w', encoding='ascii', errors='ignore') as f:
+            json.dump(papers_metadata, f, indent=2, ensure_ascii=True)
+        print(f"Saved metadata for {len(papers_metadata)} papers (with Unicode fallback)")
 
 
 

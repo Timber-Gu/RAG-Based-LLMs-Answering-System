@@ -9,6 +9,10 @@ langchain-core>=0.1.23
 openai>=1.0.0
 anthropic>=0.18.0
 
+# Llama Integration via Ollama
+langchain-ollama>=0.1.0
+ollama>=0.1.0
+
 # Vector Store with Hosted Embeddings
 pinecone>=3.0.0              # Cloud vector store with hosted llama-text-embed-v2
 langchain-pinecone>=0.1.0    # LangChain Pinecone integration

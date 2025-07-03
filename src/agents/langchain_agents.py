@@ -47,7 +47,16 @@ class PineconeHostedEmbeddings:
 class LangChainMLAgents:
     """LangChain-based multi-agent system for ML Q&A"""
     
-    def __init__(self):
+    def __init__(self, auto_upsert: bool = False):
+        """
+        Initialize LangChain ML Agents
+        
+        Args:
+            auto_upsert: Whether to automatically upsert documents to Pinecone during initialization
+                        Default is False - documents will only be upserted when explicitly requested
+        """
+        self.auto_upsert = auto_upsert
+        
         # Initialize multiple LLMs for different agents
         
         # GPT-4 for theory agent
@@ -154,7 +163,7 @@ class LangChainMLAgents:
             self.vector_store = None
     
     def _setup_pinecone_store(self, documents):
-        """Setup Pinecone vector store with hosted embeddings using LangChain"""
+        """Setup Pinecone vector store with integrated inference using new SDK v7.x API"""
         if not settings.PINECONE_API_KEY:
             raise ValueError("PINECONE_API_KEY is required for Pinecone vector store. Please set it in your .env file.")
         
@@ -170,9 +179,9 @@ class LangChainMLAgents:
             existing_indexes = [index.name for index in pc.list_indexes()]
             
             if index_name not in existing_indexes:
-                print(f"🔄 Creating Pinecone index with hosted embeddings: {index_name}")
+                print(f"🔄 Creating Pinecone index with integrated embedding: {index_name}")
                 
-                # Create index with integrated inference using llama-text-embed-v2
+                # Create index with integrated inference using new v7.x API
                 pc.create_index_for_model(
                     name=index_name,
                     cloud="aws",
@@ -184,7 +193,7 @@ class LangChainMLAgents:
                         }
                     }
                 )
-                print(f"✅ Pinecone index '{index_name}' created with hosted llama-text-embed-v2")
+                print(f"✅ Pinecone index '{index_name}' created with integrated llama-text-embed-v2")
             else:
                 print(f"✅ Using existing Pinecone index: {index_name}")
             
@@ -192,10 +201,16 @@ class LangChainMLAgents:
             self.embeddings = PineconeHostedEmbeddings(index_name)
             self.pinecone_index = pc.Index(index_name)
             
-            # Create LangChain vector store using hosted embeddings
+            # Create LangChain vector store using integrated embeddings
             if documents:
-                print(f"🔄 Setting up LangChain PineconeVectorStore with {len(documents)} documents...")
-                self.upsert_documents_to_pinecone(documents)
+                if self.auto_upsert:
+                    print(f"🔄 Auto-upsert enabled: Setting up LangChain PineconeVectorStore with {len(documents)} documents...")
+                    self.upsert_documents_to_pinecone(documents)
+                else:
+                    print(f"📚 Found {len(documents)} documents in knowledge base (auto-upsert disabled)")
+                    print("💡 To upload documents to Pinecone, call upsert_knowledge_base_to_pinecone() method")
+            else:
+                print("📝 No documents found in knowledge base - vector store will be empty")
                 
             # Create the LangChain vector store pointing to the same index
             self.vector_store = PineconeVectorStore(
@@ -204,7 +219,7 @@ class LangChainMLAgents:
                 text_key="text"  # Field containing the text content
             )
             
-            print(f"✅ LangChain PineconeVectorStore created with hosted embeddings")
+            print(f"✅ LangChain PineconeVectorStore created with integrated inference")
             
         except ImportError as e:
             print(f"❌ Pinecone dependencies error: {e}")
@@ -443,7 +458,7 @@ class LangChainMLAgents:
                         "inputs": {
                             "text": query
                         },
-                        "top_k": 3
+                        "top_k": 4
                     }
                     
                     search_results = self.pinecone_index.search(query=query_payload, namespace="__default__")
@@ -459,9 +474,9 @@ class LangChainMLAgents:
                         fields = hit.get('fields', {})
                         title = fields.get('title', 'Unknown')
                         source = fields.get('source', '')
-                        # Get a preview of the content
+                        # Get more comprehensive content for better context
                         text = fields.get('text', '')
-                        content = text[:500] + "..." if len(text) > 500 else text
+                        content = text[:2000] + "..." if len(text) > 2000 else text
                         score = hit.get('_score', 0)
                         results.append(f"Source: {title} (Score: {score:.3f})\nContent: {content}")
                     
@@ -474,7 +489,7 @@ class LangChainMLAgents:
                     
                     results = []
                     for doc in docs:
-                        content = doc.page_content[:500] + "..." if len(doc.page_content) > 500 else doc.page_content
+                        content = doc.page_content[:4000] + "..." if len(doc.page_content) > 4000 else doc.page_content
                         title = doc.metadata.get('title', 'Unknown')
                         results.append(f"Source: {title}\nContent: {content}")
                     
@@ -605,78 +620,57 @@ class LangChainMLAgents:
         theory_prompt = ChatPromptTemplate.from_messages([
             ("system", """You are a Theory Agent specializing in explaining mathematical concepts in ML/DL using Chain of Thoughts reasoning.
 
-            Your role is to provide clear, step-by-step explanations using the following structured approach:
+            **Knowledge Integration Strategy:**
+            - ALWAYS search the knowledge base first using the search_knowledge tool
+            - Combine RAG results with your extensive pretrained knowledge for complete answers
+            - If RAG provides relevant information: Use it as foundation and enhance with pretrained knowledge
+            - If RAG is insufficient or empty: Rely entirely on your pretrained knowledge
+            - Never limit your answer to only RAG content - always provide comprehensive explanations
 
-            **Chain of Thoughts Framework:**
-            1. **Problem Understanding**: First, clearly restate what is being asked
-            2. **Knowledge Retrieval**: Search the knowledge base for relevant theoretical content
-            3. **Knowledge Evaluation**: Assess if the retrieved content is sufficient for a complete explanation
-            4. **Conceptual Foundation**: Establish the fundamental concepts needed
-            5. **Step-by-Step Analysis**: Break down the problem into logical steps
-            6. **Mathematical Derivation**: Show detailed mathematical work when applicable
-            7. **Intuitive Explanation**: Provide intuitive understanding of the concepts
-            8. **Connections**: Link to related concepts and broader context
-            9. **Summary**: Conclude with key takeaways
-
-            **Knowledge Source Strategy:**
-            - ALWAYS start by searching the knowledge base using the search_knowledge tool
-            - If the knowledge base contains comprehensive, detailed information → use it as primary source
-            - If the knowledge base contains only basic/placeholder content → use your pre-trained knowledge
-            - If the knowledge base search fails or returns "not found" → use your pre-trained knowledge
-            - Clearly indicate which knowledge source you're using in your response
+            **Response Approach:**
+            1. **Search & Assess:** Use search_knowledge tool and evaluate the results
+            2. **Knowledge Synthesis:** Combine the best of RAG + pretrained knowledge
+            3. **Structured Explanation:** Use Chain of Thoughts reasoning for clear explanations
 
             **Response Format:**
-            Always structure your responses using this format:
 
-            🤔 **Thinking Process:**
-            [Brief overview of your reasoning approach]
+            🔍 **Knowledge Search:**
+            [Search knowledge base for relevant information]
 
-            📚 **Knowledge Base Search:**
-            [Use the search_knowledge tool to find relevant information]
+            📖 **Knowledge Integration:**
+            [State your approach: "Combining RAG findings with pretrained knowledge" OR "Using pretrained knowledge (RAG insufficient)"]
 
-            🔍 **Knowledge Source Decision:**
-            [Evaluate the search results and decide on knowledge source:
-            - "Using knowledge base content - found comprehensive information"
-            - "Using pre-trained knowledge - knowledge base content insufficient"
-            - "Using pre-trained knowledge - no relevant content found in knowledge base"]
+            🧠 **Chain of Thoughts Analysis:**
 
-            🧠 **Step-by-Step Analysis:**
-            
             **Step 1: Problem Understanding**
-            [Clearly restate the question and identify what needs to be explained]
-            
-            **Step 2: Fundamental Concepts**
-            [Define key terms and establish foundational knowledge]
-            
-            **Step 3: Mathematical Framework** (if applicable)
-            [Present relevant equations, formulas, or mathematical structures]
-            
-            **Step 4: Detailed Explanation**
-            [Provide thorough explanation with reasoning]
-            
-            **Step 5: Intuitive Understanding**
-            [Explain the "why" and "how" in intuitive terms]
-            
-            **Step 6: Practical Implications**
-            [Discuss how this applies in practice]
+            [Clearly restate what needs to be explained]
 
-            🔗 **Connections & Context:**
-            [Link to related concepts and broader ML/DL context]
+            **Step 2: Fundamental Concepts**
+            [Define key terms and foundational knowledge]
+
+            **Step 3: Mathematical Framework** (if applicable)
+            [Present equations, formulas, derivations with clear notation]
+
+            **Step 4: Detailed Explanation**
+            [Thorough explanation with logical reasoning]
+
+            **Step 5: Intuitive Understanding**
+            [Explain the "why" and "how" in accessible terms]
+
+            **Step 6: Connections & Applications**
+            [Link to related concepts and practical implications]
 
             📝 **Key Takeaways:**
-            [Summarize the most important points]
+            [Summarize the most important insights]
 
-            **Guidelines:**
-            - Always search the knowledge base first, but don't be limited by insufficient results
-            - If knowledge base content is minimal (like just a title), use your extensive pre-trained knowledge
-            - Provide comprehensive explanations regardless of knowledge base availability
-            - Show your reasoning process explicitly
-            - Use mathematical notation when helpful (LaTeX format)
-            - Provide both formal and intuitive explanations
-            - Connect abstract concepts to concrete examples
-            - Acknowledge your knowledge source clearly
-            - Build explanations from simple to complex concepts
-            - Never refuse to answer due to insufficient knowledge base content - always fall back to pre-trained knowledge"""),
+            **Core Principles:**
+            - Always provide comprehensive, complete answers
+            - Use both knowledge sources intelligently - don't rely solely on either
+            - Show mathematical derivations step-by-step when relevant
+            - Explain both formal concepts and intuitive understanding
+            - Build from simple to complex ideas
+            - Use LaTeX notation for mathematical expressions
+            - Connect theory to practical ML/DL applications"""),
             MessagesPlaceholder(variable_name="chat_history"),
             ("user", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad")
@@ -972,6 +966,12 @@ class LangChainMLAgents:
         return status
 
 # Convenience function for easy import
-def create_langchain_ml_agents():
-    """Factory function to create LangChain ML agents"""
-    return LangChainMLAgents() 
+def create_langchain_ml_agents(auto_upsert: bool = False):
+    """
+    Factory function to create LangChain ML agents
+    
+    Args:
+        auto_upsert: Whether to automatically upsert documents to Pinecone during initialization
+                    Default is False - documents will only be upserted when explicitly requested
+    """
+    return LangChainMLAgents(auto_upsert=auto_upsert) 
