@@ -398,5 +398,103 @@
       "cs.AI"
     ],
     "arxiv_id": "2506.24085v1"
+  },
+  {
+    "title": "Teaching Time Series to See and Speak: Forecasting with Aligned Visual and Textual Perspectives",
+    "authors": [
+      "Sixun Dong",
+      "Wei Fan",
+      "Teresa Wu",
+      "Yanjie Fu"
+    ],
+    "abstract": "Time series forecasting traditionally relies on unimodal numerical inputs,\nwhich often struggle to capture high-level semantic patterns due to their dense\nand unstructured nature. While recent approaches have explored representing\ntime series as text using large language models (LLMs), these methods remain\nlimited by the discrete nature of token sequences and lack the perceptual\nintuition humans typically apply, such as interpreting visual patterns. In this\npaper, we propose a multimodal contrastive learning framework that transforms\nraw time series into structured visual and textual perspectives. Rather than\nusing natural language or real-world images, we construct both modalities\ndirectly from numerical sequences. We then align these views in a shared\nsemantic space via contrastive learning, enabling the model to capture richer\nand more complementary representations. Furthermore, we introduce a variate\nselection module that leverages the aligned representations to identify the\nmost informative variables for multivariate forecasting. Extensive experiments\non fifteen short-term and six long-term forecasting benchmarks demonstrate that\nour approach consistently outperforms strong unimodal and cross-modal\nbaselines, highlighting the effectiveness of multimodal alignment in enhancing\ntime series forecasting. Code is available at:\nhttps://github.com/Ironieser/TimesCLIP.",
+    "url": "http://arxiv.org/abs/2506.24124v2",
+    "pdf_url": "http://arxiv.org/pdf/2506.24124v2",
+    "published": "2025-06-30T17:59:14+00:00",
+    "categories": [
+      "cs.LG",
+      "cs.CV"
+    ],
+    "arxiv_id": "2506.24124v2"
+  },
+  {
+    "title": "Intertextual Parallel Detection in Biblical Hebrew: A Transformer-Based Benchmark",
+    "authors": [
+      "David M. Smiley"
+    ],
+    "abstract": "Identifying parallel passages in biblical Hebrew (BH) is central to biblical\nscholarship for understanding intertextual relationships. Traditional methods\nrely on manual comparison, a labor-intensive process prone to human error. This\nstudy evaluates the potential of pre-trained transformer-based language models,\nincluding E5, AlephBERT, MPNet, and LaBSE, for detecting textual parallels in\nthe Hebrew Bible. Focusing on known parallels between Samuel/Kings and\nChronicles, I assessed each model's capability to generate word embeddings\ndistinguishing parallel from non-parallel passages. Using cosine similarity and\nWasserstein Distance measures, I found that E5 and AlephBERT show promise; E5\nexcels in parallel detection, while AlephBERT demonstrates stronger\nnon-parallel differentiation. These findings indicate that pre-trained models\ncan enhance the efficiency and accuracy of detecting intertextual parallels in\nancient texts, suggesting broader applications for ancient language studies.",
+    "url": "http://arxiv.org/abs/2506.24117v2",
+    "pdf_url": "http://arxiv.org/pdf/2506.24117v2",
+    "published": "2025-06-30T17:57:27+00:00",
+    "categories": [
+      "cs.CL"
+    ],
+    "arxiv_id": "2506.24117v2"
+  },
+  {
+    "title": "STACK: Adversarial Attacks on LLM Safeguard Pipelines",
+    "authors": [
+      "Ian R. McKenzie",
+      "Oskar J. Hollinsworth",
+      "Tom Tseng",
+      "Xander Davies",
+      "Stephen Casper",
+      "Aaron D. Tucker",
+      "Robert Kirk",
+      "Adam Gleave"
+    ],
+    "abstract": "Frontier AI developers are relying on layers of safeguards to protect against\ncatastrophic misuse of AI systems. Anthropic guards their latest Claude 4 Opus\nmodel using one such defense pipeline, and other frontier developers including\nGoogle DeepMind and OpenAI pledge to soon deploy similar defenses. However, the\nsecurity of such pipelines is unclear, with limited prior work evaluating or\nattacking these pipelines. We address this gap by developing and red-teaming an\nopen-source defense pipeline. First, we find that a novel few-shot-prompted\ninput and output classifier outperforms state-of-the-art open-weight safeguard\nmodel ShieldGemma across three attacks and two datasets, reducing the attack\nsuccess rate (ASR) to 0% on the catastrophic misuse dataset ClearHarm. Second,\nwe introduce a STaged AttaCK (STACK) procedure that achieves 71% ASR on\nClearHarm in a black-box attack against the few-shot-prompted classifier\npipeline. Finally, we also evaluate STACK in a transfer setting, achieving 33%\nASR, providing initial evidence that it is feasible to design attacks with no\naccess to the target pipeline. We conclude by suggesting specific mitigations\nthat developers could use to thwart staged attacks.",
+    "url": "http://arxiv.org/abs/2506.24068v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24068v1",
+    "published": "2025-06-30T17:21:08+00:00",
+    "categories": [
+      "cs.CL",
+      "cs.AI"
+    ],
+    "arxiv_id": "2506.24068v1"
+  },
+  {
+    "title": "Foundation Models for Zero-Shot Segmentation of Scientific Images without AI-Ready Data",
+    "authors": [
+      "Shubhabrata Mukherjee",
+      "Jack Lang",
+      "Obeen Kwon",
+      "Iryna Zenyuk",
+      "Valerie Brogden",
+      "Adam Weber",
+      "Daniela Ushizima"
+    ],
+    "abstract": "Zero-shot and prompt-based technologies capitalized on using frequently\noccurring images to transform visual reasoning tasks, which explains why such\ntechnologies struggle with valuable yet scarce scientific image sets. In this\nwork, we propose Zenesis, a comprehensive no-code interactive platform designed\nto minimize barriers posed by data readiness for scientific images. We develop\nlightweight multi-modal adaptation techniques that enable zero-shot operation\non raw scientific data, along with human-in-the-loop refinement and\nheuristic-based temporal enhancement options. We demonstrate the performance of\nour approach through comprehensive comparison and validation on challenging\nFocused Ion Beam Scanning Electron Microscopy (FIB-SEM) data of catalyst-loaded\nmembranes. Zenesis significantly outperforms baseline methods, achieving an\naverage accuracy of 0.947, an Intersection over Union (IOU) of 0.858, and a\nDice score of 0.923 for amorphous catalyst samples and accuracy of 0.987, an\nIOU of 0.857, and a Dice score of 0.923 for crystalline samples. These results\nmark a substantial improvement over traditional methods like Otsu thresholding\nand even advanced models like Segment Anything Model (SAM) when used in\nisolation. Our results demonstrate that Zenesis is a powerful tool for\nscientific applications, particularly in fields where high-quality annotated\ndatasets are unavailable, accelerating accurate analysis of experimental\nimaging.",
+    "url": "http://arxiv.org/abs/2506.24039v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24039v1",
+    "published": "2025-06-30T16:45:23+00:00",
+    "categories": [
+      "cs.CV",
+      "cs.HC"
+    ],
+    "arxiv_id": "2506.24039v1"
+  },
+  {
+    "title": "Bridging Physical and Digital Worlds: Embodied Large AI for Future Wireless Systems",
+    "authors": [
+      "Xinquan Wang",
+      "Fenghao Zhu",
+      "Zhaohui Yang",
+      "Chongwen Huang",
+      "Xiaoming Chen",
+      "Zhaoyang Zhang",
+      "Sami Muhaidat",
+      "Mérouane Debbah"
+    ],
+    "abstract": "Large artificial intelligence (AI) models offer revolutionary potential for\nfuture wireless systems, promising unprecedented capabilities in network\noptimization and performance. However, current paradigms largely overlook\ncrucial physical interactions. This oversight means they primarily rely on\noffline datasets, leading to difficulties in handling real-time wireless\ndynamics and non-stationary environments. Furthermore, these models often lack\nthe capability for active environmental probing. This paper proposes a\nfundamental paradigm shift towards wireless embodied large AI (WELAI), moving\nfrom passive observation to active embodiment. We first identify key challenges\nfaced by existing models, then we explore the design principles and system\nstructure of WELAI. Besides, we outline prospective applications in\nnext-generation wireless. Finally, through an illustrative case study, we\ndemonstrate the effectiveness of WELAI and point out promising research\ndirections for realizing adaptive, robust, and autonomous wireless systems.",
+    "url": "http://arxiv.org/abs/2506.24009v1",
+    "pdf_url": "http://arxiv.org/pdf/2506.24009v1",
+    "published": "2025-06-30T16:13:55+00:00",
+    "categories": [
+      "cs.IT",
+      "cs.AI",
+      "math.IT"
+    ],
+    "arxiv_id": "2506.24009v1"
   }
 ]

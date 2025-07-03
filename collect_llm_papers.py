@@ -61,13 +61,16 @@ def main():
         # Upload to Pinecone if requested
         if args.upload:
             print("\n🔄 Uploading knowledge base to Pinecone...")
-            from src.data_curation.llm_paper_collector import upload_to_pinecone
-            
-            success = upload_to_pinecone()
-            if success:
-                print("✅ Knowledge base uploaded to Pinecone!")
-            else:
-                print("❌ Failed to upload to Pinecone. Check your configuration.")
+            try:
+                from src.agents.langchain_agents import LangChainMLAgents
+                agents = LangChainMLAgents()
+                success = agents.upsert_knowledge_base_to_pinecone()
+                if success:
+                    print("✅ Knowledge base uploaded to Pinecone!")
+                else:
+                    print("❌ Failed to upload to Pinecone. Check your configuration.")
+            except Exception as e:
+                print(f"❌ Error during Pinecone upload: {e}")
             
         print("\n✨ Done! Your knowledge base is now ready to use.")
         
