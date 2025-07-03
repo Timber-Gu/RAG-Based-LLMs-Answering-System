@@ -18,6 +18,7 @@ from langchain.schema import Document
 import os
 import json
 import time
+from datetime import datetime
 from ..config import settings
 
 class PineconeHostedEmbeddings:
@@ -56,6 +57,10 @@ class LangChainMLAgents:
                         Default is False - documents will only be upserted when explicitly requested
         """
         self.auto_upsert = auto_upsert
+        
+        # Initialize chat history storage using LangChain message format
+        self.chat_history = []  # List of HumanMessage and AIMessage objects
+        self.max_history_length = 20  # Maximum number of messages to keep in memory
         
         # Initialize multiple LLMs for different agents
         
@@ -801,9 +806,20 @@ class LangChainMLAgents:
         return 'theory'
     
     def process_query(self, query: str, chat_history: List = None, show_thinking: bool = True) -> Dict[str, Any]:
-        """Process query using appropriate LangChain agent with optional thinking process display"""
+        """
+        Process query using appropriate LangChain agent with chat history support
+        
+        Args:
+            query: User question to process
+            chat_history: Optional external chat history (if None, uses internal history)
+            show_thinking: Whether to display agent thinking process
+            
+        Returns:
+            Dict containing response, agent info, and thinking process
+        """
+        # Use internal chat history if no external history provided
         if chat_history is None:
-            chat_history = []
+            chat_history = self.chat_history.copy()  # Use internal history
         
         # Route to appropriate agent
         agent_name = self.route_query(query)
@@ -817,7 +833,10 @@ class LangChainMLAgents:
             }
         
         try:
-            # Process with LangChain agent
+            # Add current query to chat history as HumanMessage
+            current_human_message = HumanMessage(content=query)
+            
+            # Process with LangChain agent using full chat history
             result = agent.invoke({
                 'input': query,
                 'chat_history': chat_history
@@ -855,6 +874,9 @@ class LangChainMLAgents:
                 response_data['has_thinking'] = True
             else:
                 response_data['has_thinking'] = False
+            
+            # Update internal chat history with the conversation
+            self._update_chat_history(query, final_response.strip(), agent_name)
             
             return response_data
             
@@ -964,6 +986,127 @@ class LangChainMLAgents:
             status[f'agent_{agent_name}'] = agent_name in self.agents
         
         return status
+    
+    def _update_chat_history(self, query: str, response: str, agent_name: str):
+        """
+        Update internal chat history with new conversation
+        
+        Args:
+            query: User question
+            response: Agent response
+            agent_name: Name of the agent that processed the query
+        """
+        # Add human message
+        self.chat_history.append(HumanMessage(content=query))
+        
+        # Add AI message with agent information
+        ai_content = f"[{agent_name.upper()} Agent] {response}"
+        self.chat_history.append(AIMessage(content=ai_content))
+        
+        # Maintain history length limit
+        if len(self.chat_history) > self.max_history_length:
+            # Remove oldest messages (keep recent conversations)
+            self.chat_history = self.chat_history[-self.max_history_length:]
+    
+    def get_chat_history(self) -> List[Dict[str, Any]]:
+        """
+        Get formatted chat history for display
+        
+        Returns:
+            List of formatted chat history entries
+        """
+        formatted_history = []
+        for i, message in enumerate(self.chat_history):
+            formatted_history.append({
+                'index': i,
+                'type': 'human' if isinstance(message, HumanMessage) else 'ai',
+                'content': message.content,
+                'timestamp': datetime.now().isoformat()  # Note: Real timestamps would need to be stored
+            })
+        return formatted_history
+    
+    def clear_chat_history(self):
+        """Clear all chat history"""
+        self.chat_history = []
+        print("✅ Chat history cleared")
+    
+    def get_chat_history_summary(self) -> Dict[str, Any]:
+        """
+        Get summary of chat history
+        
+        Returns:
+            Dictionary with chat history statistics
+        """
+        return {
+            'total_messages': len(self.chat_history),
+            'human_messages': len([m for m in self.chat_history if isinstance(m, HumanMessage)]),
+            'ai_messages': len([m for m in self.chat_history if isinstance(m, AIMessage)]),
+            'max_history_length': self.max_history_length,
+            'history_full': len(self.chat_history) >= self.max_history_length
+        }
+    
+    def save_chat_history_to_file(self, filepath: str = None):
+        """
+        Save chat history to JSON file
+        
+        Args:
+            filepath: Path to save file (optional, defaults to chat_history.json)
+        """
+        if filepath is None:
+            filepath = "chat_history.json"
+        
+        try:
+            # Convert messages to serializable format
+            history_data = []
+            for message in self.chat_history:
+                history_data.append({
+                    'type': 'human' if isinstance(message, HumanMessage) else 'ai',
+                    'content': message.content,
+                    'timestamp': datetime.now().isoformat()
+                })
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump(history_data, f, indent=2, ensure_ascii=False)
+            
+            print(f"✅ Chat history saved to {filepath}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error saving chat history: {e}")
+            return False
+    
+    def load_chat_history_from_file(self, filepath: str = None):
+        """
+        Load chat history from JSON file
+        
+        Args:
+            filepath: Path to load file (optional, defaults to chat_history.json)
+        """
+        if filepath is None:
+            filepath = "chat_history.json"
+        
+        if not os.path.exists(filepath):
+            print(f"⚠️ Chat history file not found: {filepath}")
+            return False
+        
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                history_data = json.load(f)
+            
+            # Convert back to LangChain messages
+            self.chat_history = []
+            for entry in history_data:
+                if entry['type'] == 'human':
+                    self.chat_history.append(HumanMessage(content=entry['content']))
+                else:
+                    self.chat_history.append(AIMessage(content=entry['content']))
+            
+            print(f"✅ Chat history loaded from {filepath} ({len(self.chat_history)} messages)")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error loading chat history: {e}")
+            return False
 
 # Convenience function for easy import
 def create_langchain_ml_agents(auto_upsert: bool = False):

@@ -43,8 +43,14 @@ def main():
     
     # Interactive loop
     print("\n💬 Interactive Q&A Mode")
-    print("Type 'quit' to exit, 'agents' to see available agents")
-    print("Type 'thinking on/off' to toggle thinking process display")
+    print("Available commands:")
+    print("  • 'quit' - Exit the application")
+    print("  • 'agents' - Show available agents")
+    print("  • 'thinking on/off' - Toggle thinking process display")
+    print("  • 'history' - Show chat history")
+    print("  • 'clear history' - Clear chat history")
+    print("  • 'save history' - Save chat history to file")
+    print("  • 'load history' - Load chat history from file")
     print("-" * 50)
     
     show_thinking = True  # Default to showing thinking process
@@ -73,6 +79,47 @@ def main():
                     print(f"🧠 Thinking process display: {'ON' if show_thinking else 'OFF'}")
                 continue
             
+            # Handle chat history commands
+            if query.lower() == 'history':
+                history_summary = agents.get_chat_history_summary()
+                print(f"📊 Chat History Summary:")
+                print(f"   Total messages: {history_summary['total_messages']}")
+                print(f"   Human messages: {history_summary['human_messages']}")
+                print(f"   AI messages: {history_summary['ai_messages']}")
+                print(f"   Max history length: {history_summary['max_history_length']}")
+                
+                if history_summary['total_messages'] > 0:
+                    print("\n📜 Recent Chat History:")
+                    history = agents.get_chat_history()
+                    for entry in history[-10:]:  # Show last 10 messages
+                        msg_type = "🤔 You" if entry['type'] == 'human' else "🤖 AI"
+                        content = entry['content'][:100] + "..." if len(entry['content']) > 100 else entry['content']
+                        print(f"   {msg_type}: {content}")
+                else:
+                    print("   No chat history available")
+                continue
+            
+            if query.lower() == 'clear history':
+                agents.clear_chat_history()
+                continue
+            
+            if query.lower() == 'save history':
+                success = agents.save_chat_history_to_file()
+                if success:
+                    print("✅ Chat history saved successfully")
+                else:
+                    print("❌ Failed to save chat history")
+                continue
+            
+            if query.lower() == 'load history':
+                success = agents.load_chat_history_from_file()
+                if success:
+                    summary = agents.get_chat_history_summary()
+                    print(f"📊 Loaded {summary['total_messages']} messages")
+                else:
+                    print("❌ Failed to load chat history")
+                continue
+            
             if not query:
                 print("⚠️ Please enter a question")
                 continue
@@ -94,6 +141,11 @@ def main():
                     print("=" * 40)
                 
                 print(f"\n💡 Final Response:\n{result['response']}")
+                
+                # Show chat history context info
+                history_summary = agents.get_chat_history_summary()
+                print(f"\n📊 Chat context: {history_summary['total_messages']} messages in history")
+                
             else:
                 print(f"❌ Error: {result.get('error', 'Unknown error')}")
         
